@@ -1,61 +1,67 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const d3 = require('d3');
 const exec = require('child_process').exec;
+const d3 = require('d3');
+const request = require('request');
+const cheerio = require('cheerio');
 const program = require('commander');
 
-function includes(array, value) {
-    return array.indexOf(value) > -1;
-}
+const formatDate = d3.timeFormat('%Y-%m-%d--%H');
 
-// Example URLs:
-// https://www.nohrsc.noaa.gov/snowfall/data/201712/sfav2_CONUS_6h_2017120512.tif
-// https://www.nohrsc.noaa.gov/snowfall/data/201712/sfav2_CONUS_24h_2017120100.tif
-// https://www.nohrsc.noaa.gov/snowfall/data/201712/sfav2_CONUS_48h_2017121900.tif
-// https://www.nohrsc.noaa.gov/snowfall/data/201712/sfav2_CONUS_72h_2017120812.tif
-// https://www.nohrsc.noaa.gov/snowfall/data/201712/sfav2_CONUS_2017093012_to_2017121912.tif
-function createUrl(timespan, date) {
-    const time = d3.timeFormat('%Y%m%d%H')(date);
-    const year_month = d3.timeFormat('%Y%m')(date);
-    if (timespan === 'season') {
-        if (date.getHours() !== 12) throw new Error('Season accumulation must end at noon of the specified date.');
-        const start_time = d3.timeFormat('%Y093012')(date);
-        return `https://www.nohrsc.noaa.gov/snowfall/data/${year_month}/sfav2_CONUS_${start_time}_to_${time}.tif`;
-    }
-    return `https://www.nohrsc.noaa.gov/snowfall/data/${year_month}/sfav2_CONUS_${timespan}h_${time}.tif`;
-}
+function parseUrl(url) {
 
-function coerceDate(value) {
-    const parts = value.split('-');
-    const year = +parts[0];
-    const month = +parts[1];
-    const day = +parts[2];
-    const hours = +parts[3];
-    return new Date(year, month - 1, day, hours);
-}
+    // Timespan
+    let timespan;
+    if (/CONUS_\d{10}_to_\d{10}/.test(url)) timespan = 'season';
+    else timespan = /CONUS_(\d+)h_/.exec(url)[1] + 'h';
 
-const timespans = ['6', '24', '48', '72', 'season'];
+    // Date
+    let date;
+    if (timespan === 'season') date = /CONUS_\d{10}_to_(\d{10})/.exec(url)[1];
+    else date = /CONUS_\d+h_(\d{10})/.exec(url)[1];
+    date = d3.timeParse('%Y%m%d%H')(date);
 
-function coerceTimespan(value) {
-    const timespan = value.trim();
-    if (!includes(timespans, timespan)) throw new Error('Invalid timespan');
-    return timespan;
+    return { timespan, date };
 }
 
 program
     .version('0.1.0')
-    .option('-d, --date <YYYY-MM-DD-HH>', 'Date of snow accumulation', coerceDate)
-    .option('-t, --timespan <timespan>', 'Timespan of accumulation: 6, 24, 48, 72 or season', coerceTimespan)
-    .option('-o, --output <file>', 'Output GeoTIFF file')
+    .option('--date <YYYYMM>', 'Year and month of snow accumulation')
+    .option('-d, --dir <directory>', 'Directory to download data into')
     .parse(process.argv);
 
 const date = program.date;
-const timespan = program.timespan;
-const output = program.output;
+const dir = program.dir || 'snow-accumulation';
 
-const url = createUrl(timespan, date);
-
-exec(`curl -o ${output} ${url}`, (error) => {
+request(`https://www.nohrsc.noaa.gov/snowfall/data/${date}/`, (error, response, body) => {
     if (error) throw error;
+    if (response.statusCode !== 200) throw new Error(`Bad response: ${response.statusCode}`)
+
+    const $ = cheerio.load(body);
+
+    $('a').each(function(i, a) {
+        const url_stub = $(a).attr('href');
+        const url = `https://www.nohrsc.noaa.gov/snowfall/data/${date}/${url_stub}`;
+        if (/.tif$/.test(url)) {
+            const d = parseUrl(url);
+            const folder = `${dir}/${d.timespan}`;
+            const file = `${folder}/${formatDate(d.date)}.tif`;
+
+            exec(`mkdir -p ${folder}`, (error) => { if (error) throw error; });
+
+            if(!fs.existsSync(file)) {
+                setTimeout(() => {
+                    console.log(`Downloading ${file}`);
+                    exec(`curl -o ${file} ${url}`, (error) => {
+                        if (error) {
+                            exec('rm ${file}', (error) => { if (error) throw error; });
+                            throw error;
+                        }
+                        console.log(`Finished downloading ${file}`);
+                    });
+                }, i * 1000);
+            }
+        }
+    });
 });
