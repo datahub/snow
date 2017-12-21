@@ -17,4 +17,6 @@ make
 ```
 Currently it downloads and cleans up the entire history of climate data for Milwaukee and Minneapolis. The Makefile downloads `txt/ghcnd-stations.txt` which lists weather stations. Identify station IDs in this list and add them to the Makefile.
 
+## Examples
+
 See the `examples/` folder for examples of how to process and analyze the data.
