@@ -6,5 +6,4 @@
 
 ## `national-snowfall-analysis/`:
 
-**[National Snowfall Analysis](https://www.nohrsc.noaa.gov/snowfall/):**
-Provides gridded snow accumulation for various time spans: 24-hr, 48-hr, 72-hr and season-total accumulation. 
+**National Snowfall Analysis** provides gridded snow accumulation for various time spans: 24-hr, 48-hr, 72-hr and season-total accumulation. 
