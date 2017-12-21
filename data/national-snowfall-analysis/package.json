@@ -1,0 +1,19 @@
+{
+  "name": "national-snowfall-analysis",
+  "version": "1.0.0",
+  "description": "**[National Snowfall Analysis](https://www.nohrsc.noaa.gov/snowfall/):** Provides gridded snow accumulation for various time spans: 24-hr, 48-hr, 72-hr and season-total accumulation.",
+  "main": "index.js",
+  "bin": {
+    "national-snowfall-analysis": "get-snow-accumulation.js"
+  },
+  "scripts": {
+    "build": "make"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.12.2",
+    "d3": "^4.12.0"
+  }
+}

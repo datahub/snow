@@ -4,7 +4,7 @@ The Global Historical Climate Network (GHCN) provides, among other things, daily
 
 ## Usage
 
-This folder contains the instructions for pull GHCN daily data for any land-based weather station in the network, including Milwaukee.
+This folder contains the instructions to pull GHCN daily data for any land-based weather station in the network, including Milwaukee.
 
 First you'll need to install some Node.js packages.
 ```bash
