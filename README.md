@@ -24,4 +24,4 @@ Daily climate summaries from land surface stations, which includes snowfall and 
 Map of snow accumulation across the US: 24-hr, 48-hr, 72-hr and season-total accumulation. ([FTP](https://www.nohrsc.noaa.gov/snowfall/data/))
 
 **[Snow Data Assimilation System (SNODAS)](http://nsidc.org/data/g02158):**
-Map of snow pack properties, including snow depth. ([FTP](ftp://sidads.colorado.edu/DATASETS/NOAA/G02158/))
+Map of snow pack properties, including snow depth. (<a href="ftp://sidads.colorado.edu/DATASETS/NOAA/G02158/">FTP</a>)
