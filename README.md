@@ -11,7 +11,7 @@ Questions we could answer:
 
 ## Sources:
 
-**[City of Milwaukee Snow and Ice Control Operation Status](http://city.milwaukee.gov/mpw/divisions/operations/snowoperationstatus#.WjvjxlQ-cQ8)**
+**[City of Milwaukee Snow and Ice Control Operation Status](http://city.milwaukee.gov/mpw/divisions/operations/snowoperationstatus#.WjvjxlQ-cQ8):**
 Is there a snow emergency in Milwaukee? What parking regulations are in effect. Will there be a disruptions to garbage collection?
 
 **[National Weather Service Forecast API](https://forecast-v3.weather.gov/documentation):**
