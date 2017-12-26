@@ -1,0 +1,122 @@
+@media screen {
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_Rg.eot);
+    src: url(EOT/UnifySerif_W_Rg.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySerif_W_Rg.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_Rg.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_Rg.ttf) format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_SBd.eot);
+    src: url(EOT/UnifySerif_W_SBd.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySerif_W_SBd.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_SBd.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_SBd.ttf) format("truetype");
+    font-style: normal;
+    font-weight: 700;
+}
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_Bd.eot);
+    src: url(EOT/UnifySerif_W_Bd.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySerif_W_Bd.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_Bd.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_Bd.ttf) format("truetype");
+    font-style: normal;
+    font-weight: 900;
+}
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_It.eot);
+    src: url(EOT/UnifySerif_W_It.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySerif_W_It.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_It.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_It.ttf) format("truetype");
+    font-style: italic;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_SBdIt.eot);
+    src: url(EOT/UnifySerif_W_SBdIt.eot?#iefix) format("embedded-opentype"), 
+        url(WOFF/UnifySerif_W_SBdIt.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_SBdIt.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_SBdIt.ttf) format("truetype");
+    font-style: italic;
+    font-weight: 700;
+}
+@font-face {
+    font-family: 'Unify Serif';
+    src: url(EOT/UnifySerif_W_BdIt.eot);
+    src: url(EOT/UnifySerif_W_BdIt.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySerif_W_BdIt.woff) format("woff"),
+        url(WOFF2/UnifySerif_W_BdIt.woff2) format("woff2"),
+        url(TTF/UnifySerif_A_BdIt.ttf) format("truetype");
+    font-style: italic;
+    font-weight: 900;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_Rg.eot);
+    src: url(EOT/UnifySans_W_Rg.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_Rg.woff) format("woff"),
+        url(WOFF2/UnifySans_W_Rg.woff2) format("woff2"),
+        url(TTF/UnifySans_A_Rg.ttf) format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_SBd.eot);
+    src: url(EOT/UnifySans_W_SBd.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_SBd.woff) format("woff"),
+        url(WOFF2/UnifySans_W_SBd.woff2) format("woff2"),
+        url(TTF/UnifySans_A_SBd.ttf) format("truetype");
+    font-style: normal; 
+    font-weight: 700;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_Bd.eot);
+    src: url(EOT/UnifySans_W_Bd.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_Bd.woff) format("woff"),
+        url(WOFF2/UnifySans_W_Bd.woff2) format("woff2"),
+        url(TTF/UnifySans_A_Bd.ttf) format("truetype");
+    font-style: normal;
+    font-weight: 900;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_It.eot);
+    src: url(EOT/UnifySans_W_It.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_It.woff) format("woff"),
+        url(WOFF2/UnifySans_W_It.woff2) format("woff2"),
+        url(TTF/UnifySans_A_It.ttf) format("truetype");
+    font-style: italic;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_SBdIt.eot);
+    src: url(EOT/UnifySans_W_SBdIt.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_SBdIt.woff) format("woff"),
+        url(WOFF2/UnifySans_W_SBdIt.woff2) format("woff2"),
+        url(TTF/UnifySans_A_SBdIt.ttf) format("truetype");
+    font-style: italic;
+    font-weight: 700;
+}
+@font-face {
+    font-family: 'Unify Sans';
+    src: url(EOT/UnifySans_W_BdIt.eot);
+    src: url(EOT/UnifySans_W_BdIt.eot?#iefix) format("embedded-opentype"),
+        url(WOFF/UnifySans_W_BdIt.woff) format("woff"),
+        url(WOFF2/UnifySans_W_BdIt.woff2) format("woff2"),
+        url(TTF/UnifySans_A_BdIt.ttf) format("truetype");
+    font-style: italic;
+    font-weight: 900;
+}
+}
