@@ -16,7 +16,19 @@
           Spicy jalapeno bacon ipsum dolor amet veniam bresaola pork chop
           exercitation pork belly. Mollit swine frankfurter consequat pig
           pork loin short ribs ipsum et tail short loin sausage nisi irure.
-          Sint commodo hamburger fugiat. Nulla non brisket sausage cillum.
+        </p>
+        <a href="https://www.jsonline.com/weather/">
+          <div class="forecast-link">
+            <div class="snowflake">
+              <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+            </div>
+            <div class="hed">Is it going to snow?</div>
+            <div class="dek">Check the weather forecast</div>
+          </div>
+        </a>
+        <p>
+          Sint commodo hamburger fugiat. 
+          Nulla non brisket sausage cillum.
           Rump ullamco sausage turducken non voluptate cillum. Spare ribs
           leberkas nisi in mollit cillum tri-tip. Ut pig minim, ex capicola
           beef labore laboris ham hock buffalo.
@@ -141,6 +153,35 @@ section.graphic {
       margin-top: 0px;
       color: #666;
     }
+  }
+}
+
+.forecast-link {
+  float: right;
+  width: 275px;
+  padding: 8px 20px;
+  margin: 2% -25% 2% 2%;
+  border-radius: 2px;
+  background-color: #518fc2;
+  font-family: 'Unify Sans', sans-serif;
+  color: #f3f3f3;
+  text-shadow: 1px 1px 1px #333;
+
+  .snowflake {
+    float: right;
+    font-size: 34px;
+    color: #fff;
+    text-shadow: none;
+  }
+
+  .hed {
+    font-weight: bold;
+    font-size: 22px;
+  }
+
+  .dek {
+    font-size: 14px;
+    color: #e3e3e3;
   }
 }
 
