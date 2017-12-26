@@ -38,7 +38,7 @@
         <div class="chatter">
           <h2>How much snow has fallen in Milwaukee?</h2>
           <p>
-            Total snow accumulation for all winters from 1938 to the present.
+            Total snow accumulation for every winters from 1938 to the present.
           </p>
         </div>
         <SnowAccumulationChart/>
@@ -59,7 +59,7 @@
         <div class="chatter">
           <h2>Snowfall across Wisconsin</h2>
           <p>
-            Total snow accumulation from the current winter season.
+            Total snow accumulation from this current winter season.
           </p>
         </div>
         <SnowAccumulationMap />

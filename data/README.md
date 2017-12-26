@@ -1,5 +1,9 @@
 # Folder structure
 
+## `data-for-graphics`:
+
+The data that is used for graphics on the page.
+
 ## `ghcnd/`:
 
 **Global Historical Climate Network (Daily)** provides daily climate summaries from land surface stations, which includes snowfall and snow depth. This historical data can be used to show how this winter's snow accumulation in Milwaukee compares to all past winters, dating back to 1938.
