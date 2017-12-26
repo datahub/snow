@@ -166,6 +166,7 @@ section.graphic {
   font-family: 'Unify Sans', sans-serif;
   color: #f3f3f3;
   text-shadow: 1px 1px 1px #333;
+  box-shadow: 0.5px 0.5px 2px 1px #ccc;
 
   .snowflake {
     float: right;
@@ -183,6 +184,10 @@ section.graphic {
     font-size: 14px;
     color: #e3e3e3;
   }
+}
+
+#snow-accumulation-chart {
+  max-width: 750px;
 }
 
 </style>
