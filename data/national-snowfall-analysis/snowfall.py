@@ -2,21 +2,24 @@
 
 import datetime
 import re
-import tempfile
-from functools import reduce
 import click
 import requests
-import rasterio
+import pathlib
 
-def days_in_month(year, month):
-    d0 = datetime.date(year, month, 1)
-    d1 = datetime.date(year, month + 1, 1)
-    return (d1 - d0).days
+directory_type = click.Path(exists=True, file_okay=False, dir_okay=True)
+
+def date_range(start, end):
+    n = (end - start).days
+    return [start + datetime.timedelta(days=x) for x in range(0, n + 1)]
 
 def dates_in_month(year, month):
-    n = days_in_month(year, month)
-    days = range(1, n)
-    return map(lambda day: datetime.date(year, month, day), days)
+    m0 = month
+    y0 = year
+    m1 = month + 1 if month < 12 else 1
+    y1 = year if month < 12 else year + 1
+    start = datetime.date(y0, m0, 1)
+    end = datetime.date(y1, m1, 1) - datetime.timedelta(days=1)
+    return date_range(start, end)
 
 def validate_date(context, parameter, value):
     try:
@@ -28,6 +31,17 @@ def validate_date(context, parameter, value):
         return datetime.date(year, month, day)
     except ValueError:
         raise click.BadParameter('Date needs to be in format YYYY-MM-DD')
+
+def validate_month(context, parameter, value):
+    try:
+        pattern = re.compile('(\d{4})-(\d{2})')
+        match = pattern.search(value)
+        if match is None:
+            raise click.BadParameter('Year/month needs to be in format YYYY-MM')
+        [year, month] = map(lambda i: int(match.group(i)), (1, 2))
+        return datetime.date(year, month, 1)
+    except ValueError:
+        raise click.BadParameter('Year/month needs to be in format YYYY-MM')
 
 def build_url(date, hour, length):
     parameters = {
@@ -53,15 +67,17 @@ def cli():
     pass
 
 @cli.command()
-@click.option('-o', '--output', type=click.File('wb'), required=True,
+@click.option('-o', '--output', type=click.Path(), required=True,
     help='Output filename')
-@click.option('-d', '--date', callback=validate_date,
+@click.option('-d', '--date', callback=validate_date, required=True,
     help='Ending date for accumulation (YYYY-MM-DD)')
 @click.option('-h', '--hour', type=click.Choice(['0', '6', '12', '18']),
-    help='Ending hour of the day for accumulation')
+    required=True, help='Ending hour of the day for accumulation')
 @click.option('-l', '--length', type=click.Choice(['6h', '24h', '48h', '72h', 'season']),
-    help='Timespan of accumulation')
-def download(output, date, hour, length):
+    required=True, help='Timespan of accumulation')
+@click.option('--overwrite', help="Overwrite file if it already exists",
+    is_flag=True, default=False)
+def download_file(output, date, hour, length, overwrite):
     '''
     Download a snow accumulation file.
     
@@ -69,6 +85,12 @@ def download(output, date, hour, length):
     available for several timespans: 6 hours, 1 day, 2 days, 3 days
     and the entire season.
     '''
+    if not overwrite:
+        out_file = pathlib.Path(output)
+        file_exists = out_file.exists()
+        if file_exists:
+            return None
+
     url = build_url(date, hour, length)
     r = requests.get(url, stream=True)
     status_code = r.status_code
@@ -80,78 +102,81 @@ def download(output, date, hour, length):
         )
     content = r.iter_content(chunk_size=1024)
     num_chunks = int(r.headers['Content-length']) / 1024
-    with click.progressbar(content, length=num_chunks, label='Downloading GeoTIFF') as bar:
-        for chunk in bar:
-            if chunk:
-                output.write(chunk)
+    progress_label = 'Downloading {filename}'.format(filename=output)
+    with open(output, 'wb') as out_file:
+        with click.progressbar(content, length=num_chunks, label=progress_label) as bar:
+            for chunk in bar:
+                if chunk:
+                    out_file.write(chunk)
 
 @cli.command()
-@click.option('-o', '--output', type=click.File('wb'), required=True,
-    help='Output filename')
-@click.option('-y', '--year', help='Year (YYYY)', type=int)
-@click.option('-m', '--month', help='Month (MM)', type=int)
-def download_month(output, year, month):
+@click.option('-d', '--directory', type=directory_type,
+    default='.', help='Output directory')
+@click.option('-s', '--start', help='Start date (YYYY-MM-DD)', callback=validate_date,
+    required=True)
+@click.option('-e', '--end', help='End date (YYYY-MM-DD)', callback=validate_date,
+    required=True)
+@click.option('--overwrite', help="Overwrite file if it already exists",
+    is_flag=True, default=False)
+@click.pass_context
+def download_range(context, directory, start, end, overwrite):
     '''
-    Download and aggregate a month of snow accumulation data.
+    Download snow accumulation data for a range of days.
+
+    Each day of snow accumulation is saved as a separate file in
+    the directory you choose. Filenames follow a year-month-day
+    format: YYYY-MM-DD.tif.
     '''
-    dates = list(dates_in_month(year, month))[1:2]
+    dates = date_range(start, end)
     files = []
     datasets = []
     bands = []
+    if not directory.endswith('/'):
+        directory += '/'
     for date in dates:
-        url = build_url(date, 0, '24h')
-        r = requests.get(url)
-        status_code = r.status_code
-        if (status_code < 200) or (status_code >= 300):
-            raise click.ClickException(
-                'Download failed...\n' +
-                'Status code: {status_code}\n'.format(status_code=status_code) +
-                'URL: {url}\n'.format(url=url)
-            )
-        with tempfile.NamedTemporaryFile() as tmpfile:
-            tmpfile.write(r.content)
-            with rasterio.open(tmpfile.name) as dataset:
-                datasets.append(dataset)
-                band = dataset.read(1, masked=True)
-                bands.append(band)
-    aggregated_band = reduce(lambda a, b: a + b, bands)
-    parameters = {
-        'driver': 'GTiff',
-        'height': datasets[0].shape[0],
-        'width': datasets[0].shape[1],
-        'crs': datasets[0].crs,
-        'transform': datasets[0].transform,
-        'count': 1,
-        'dtype': bands[0].dtype,
-        'nodata': datasets[0].nodata,
-    }
-    with rasterio.open(output, 'w', **parameters) as out_file:
-        out_file.write(aggregated_band, 1)
-            
+        filename_parameters = {
+            'directory': directory,
+            'year': str(date.year),
+            'month': '{month:0>2}'.format(month=date.month),
+            'day': '{day:0>2}'.format(day=date.day),
+        }
+        filename = '{directory}{year}-{month}-{day}.tif'.format(**filename_parameters)
+        output = click.Path().convert(filename, None, context)
+        download_parameters = {
+            'output': output,
+            'date': date,
+            'hour': '12',
+            'length': '24h',
+            'overwrite': overwrite,
+        }
+        context.invoke(download_file, **download_parameters)
+
 @cli.command()
-@click.argument('src', type=click.Path(exists=True), nargs=-1)
-@click.argument('dst', type=click.Path(), nargs=1)
-def aggregate(src, dst):
-    datasets = []
-    bands = []
-    for path in src:
-        dataset = rasterio.open(path, 'r')
-        datasets.append(dataset)
-        band = dataset.read(1, masked=True)
-        bands.append(band)
-    aggregated_band = reduce(lambda a, b: a + b, bands)
-    parameters = {
-        'driver': 'GTiff',
-        'height': datasets[0].shape[0],
-        'width': datasets[0].shape[1],
-        'crs': datasets[0].crs,
-        'transform': datasets[0].transform,
-        'count': 1,
-        'dtype': bands[0].dtype,
-        'nodata': datasets[0].nodata,
+@click.option('-d', '--directory', type=directory_type,
+    default='.', help='Output directory')
+@click.option('-y', '--year', help='Year (YYYY)', type=int)
+@click.option('-m', '--month', help='Month (MM)', type=int)
+@click.option('--overwrite', help="Overwrite file if it already exists",
+    is_flag=True, default=False)
+@click.pass_context
+def download_month(context, directory, year, month, overwrite):
+    '''
+    Download snow accumulation data for all days in a month.
+
+    Each day of snow accumulation is saved as a separate file in
+    the directory you choose. Filenames follow a year-month-day
+    format: YYYY-MM-DD.tif.
+    '''
+    dates = dates_in_month(year, month)
+    start = dates[0]
+    end = dates[-1]
+    download_parameters = {
+        'directory': directory,
+        'start': start,
+        'end': end,
+        'overwrite': overwrite,
     }
-    with rasterio.open(dst, 'w', **parameters) as out_file:
-        out_file.write(aggregated_band, 1)
+    context.invoke(download_range, **download_parameters)
 
 if __name__ == '__main__':
     cli()
