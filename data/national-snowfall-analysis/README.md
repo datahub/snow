@@ -5,7 +5,11 @@ Provides gridded snow accumulation for various time spans: 6-hr, 24-hr, 48-hr, 7
 
 The grid resolution is 0.04 degrees (144 arc sec or about 2 miles). Data come in a few formats: NetCDF, GeoTIFF, GRIB2. They can be projected or unprojected.
 
+Accumulation is recorded in inches.
+
 The 24-hour periods start at either 00:00 UTC (midnight) or 12:00 UTC (midnight). Universal Time (UTC) is six hours ahead of U.S. Central Standard Time (CST). So these times are equivalent to 6:00 PM the previous day and 6:00 AM the same day.
+
+All accumulations for periods exceeding 24 hours are produced by aggregating 24-hour analyses; i.e., no independent 48- or 72-hour-or seasonal-analyses are performed.
 
 ## Usage
 

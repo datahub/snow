@@ -1,9 +1,31 @@
 <html>
 <head>
 <style>
-.graphic svg {
-    display: block;
-    margin: 0px auto;
+
+html, body {
+    font-size: 20px;
+    font-family: 'Unify Serif', serif;
+    color: #434343;
+}
+
+section {
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+p {
+    line-height: 1.4;
+}
+
+.graphic {
+    font-family: 'Unify Sans', sans-serif;
+    margin: 40px auto;
+}
+
+.graphic .title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
 }
 
 .axis .domain {
@@ -20,11 +42,33 @@
     font-family: 'Unify Sans', sans-serif;
 }
 
+.border {
+    fill: none;
+    stroke: #ccc;
+    border-width: 0.5px;
+}
+
 </style>
 </head>
 <body>
-
-<div class="graphic"></div>
+<section>
+    <p>Spicy jalapeno bacon ipsum dolor amet beef turducken shankle, strip steak pork belly kielbasa ham hock porchetta filet mignon landjaeger burgdoggen swine. Hamburger drumstick jerky, strip steak brisket salami pastrami t-bone chuck venison rump prosciutto picanha tenderloin. Brisket flank ham tenderloin bresaola bacon pig burgdoggen, turkey meatball meatloaf frankfurter tri-tip. Pastrami chicken picanha doner, ham hock swine ball tip ribeye pork belly bacon cow strip steak andouille.</p>
+    <p>Beef ribs picanha swine burgdoggen meatball. Kielbasa pancetta tail, sausage tongue fatback turkey jerky pig alcatra short loin pastrami cow. Bresaola frankfurter kielbasa porchetta shank, short loin hamburger. Chicken pastrami filet mignon, beef ribs pork belly tenderloin shoulder pork chop meatball strip steak pancetta rump drumstick.</p>
+    <p>Tail ball tip andouille, spare ribs t-bone beef cow shank. T-bone bresaola buffalo salami short ribs, strip steak pig flank alcatra ball tip. Pancetta porchetta cupim spare ribs venison kevin ground round short ribs turducken ribeye turkey rump. Shank biltong strip steak pork chop. Pig tenderloin spare ribs shankle, chicken corned beef doner t-bone pancetta shank. Corned beef landjaeger pork venison.</p>
+    <p>Ground round jerky shank leberkas kielbasa tenderloin fatback tail kevin alcatra flank salami. Shank pork prosciutto turkey sausage porchetta. Drumstick sausage tenderloin bresaola pastrami jowl. Sausage jowl kielbasa, chicken porchetta filet mignon ham hock jerky prosciutto t-bone pork chop meatball shank flank burgdoggen. Tenderloin turducken cupim tail pork loin spare ribs frankfurter, porchetta beef ribs.</p>        
+</section>
+<div class="graphic">
+    <div class="title">
+        Snow accumulation by month
+    </div>
+    <svg></svg>
+</div>
+<section>
+    <p>Boudin pork loin pastrami shank sausage hamburger chicken turkey shankle. Leberkas jowl ham hock frankfurter kielbasa. Turducken ribeye biltong, hamburger prosciutto andouille chicken. Pork cow andouille brisket. Shank bresaola beef ribs, chuck filet mignon rump hamburger chicken landjaeger boudin pastrami salami sirloin andouille fatback. Sausage buffalo tail picanha jowl.</p>
+    <p>Drumstick tongue rump buffalo spare ribs meatloaf. Meatloaf pig short ribs filet mignon shankle pastrami. Shankle tongue pork loin spare ribs sirloin prosciutto andouille cow pork chop short ribs. Ribeye tenderloin beef ribs pork belly salami ball tip pork boudin drumstick meatloaf. Leberkas boudin frankfurter tongue buffalo pork loin.        </p>
+    <p>Tri-tip fatback turkey bresaola pork pig capicola tongue tenderloin. Beef ribs burgdoggen venison, t-bone alcatra pancetta beef ground round cow drumstick. Turducken shank porchetta, chuck meatball strip steak jowl ball tip capicola brisket pork loin pig drumstick cupim. Jerky salami ground round turducken kevin short ribs chuck landjaeger doner sirloin, brisket strip steak corned beef t-bone. Boudin kielbasa tri-tip salami venison drumstick. Pork chop kevin ham hock meatball biltong leberkas spare ribs turducken turkey pig boudin jowl frankfurter pork tongue. Capicola flank sirloin kielbasa t-bone, venison beef cow meatball alcatra.</p>
+    <p>Boudin kielbasa tenderloin capicola sirloin tri-tip. Ribeye hamburger rump pork belly tenderloin, leberkas sirloin ball tip t-bone flank ham hock. Porchetta pastrami filet mignon salami drumstick, pork belly short ribs brisket buffalo meatball corned beef bacon short loin frankfurter. Doner brisket picanha, prosciutto strip steak chuck flank. Brisket bacon t-bone pork.</p>
+</section>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
@@ -32,6 +76,7 @@
 
 const imageWidth = 501;
 const imageHeight = 516;
+const aspectRatio = imageWidth / imageHeight;
 
 const formatMonth = (d) => {
     const date = new Date(2000, d - 1, 1);
@@ -39,12 +84,31 @@ const formatMonth = (d) => {
 };
 
 const margin = {top: 30, right: 10, bottom: 10, left: 50};
-const width = 600 - margin.left - margin.right;
-const height = 550 - margin.top - margin.bottom;
+const fullWidth = 700;
+const fullHeight = fullWidth * (550 / 600);
+const width = fullWidth - margin.left - margin.right;
+const height = fullHeight - margin.top - margin.bottom;
 
 const proj4String = '+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +units=m +no_defs';
 
-const project = proj4(proj4String);
+const proj4Projection = proj4(proj4String);
+
+function degreesToRadians(degrees) { return degrees * Math.PI / 180; }
+function radiansToDegrees(radians) { return radians * 180 / Math.PI; }
+
+const project = function(lambda, phi) {
+    return proj4Projection
+        .forward([lambda, phi].map(radiansToDegrees));
+}
+
+project.invert = function(x, y) {
+    return proj4Projection
+        .inverse([x, y].map(degreesToRadians));
+};
+
+const projection = d3.geoProjection(project);
+
+const path = d3.geoPath(projection);
 
 const years = d3.range(2013, 2018).reverse();
 const months = [11, 12, 1, 2, 3, 4];
@@ -60,11 +124,28 @@ const yScale = d3.scaleBand()
     .domain(years)
     .range([height, 0]);
 
+const mapWidth = xScale.bandwidth();
+const mapHeight = mapWidth * aspectRatio;
+const mapPadding = [0, (yScale.bandwidth() - mapHeight) / 2];
+const mapExtent = [
+    [mapPadding[0], mapPadding[1]],
+    [mapWidth - mapPadding[0], mapHeight + mapPadding[1]],
+];
+
 const yAxis = d3.axisLeft(yScale);
 
-const svg = d3.select('.graphic').append('svg')
+const graphic = d3.select('.graphic')
+    .style('max-width', `${fullWidth}px`);
+
+const svg = graphic.select('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom);
+
+const defs = svg.append('defs');
+
+const clipPath = defs.append('clipPath')
+    .attr('id', 'wisconsin-border')
+    .append('path');
 
 const g = svg.append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -80,6 +161,8 @@ const data = years
     });
 
 function ready(wisconsin) {
+    projection.fitExtent(mapExtent, wisconsin);
+
     const season = g.selectAll('.season').data(data)
         .enter().append('g')
             .attr('class', d => `season season--${d.year}-${d.year + 1}`)
@@ -96,8 +179,17 @@ function ready(wisconsin) {
             return `png/wi-snow-colored-${d.year}-${pad(d.month)}.png`;
         })
         .attr('width', xScale.bandwidth())
-        .attr('height', yScale.bandwidth());
+        .attr('height', yScale.bandwidth())
+        .attr('clip-path', 'url(#wisconsin-border)');
 
+    month.append('path')
+        .datum(wisconsin)
+        .attr('class', 'border border--wisconsin')
+        .attr('d', path);
+
+    clipPath.datum(wisconsin)
+        .attr('d', path);
+    
     g.append('g').attr('class', 'axis axis--x')
         .call(xAxis);
     
