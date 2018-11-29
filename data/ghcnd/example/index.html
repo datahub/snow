@@ -1,0 +1,271 @@
+<html>
+<head>
+<style>
+
+html, body {
+    font-size: 20px;
+    font-family: 'Unify Serif', serif;
+    color: #434343;
+}
+
+section {
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+p {
+    line-height: 1.4;
+}
+
+.graphic {
+    font-family: 'Unify Sans', sans-serif;
+    margin: 40px auto;
+}
+
+.graphic .title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 5px;
+}
+
+.graphic .subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.axis .domain {
+    display: none;
+}
+
+.axis .tick text {
+    fill: #666;
+    font-size: 16px;
+    font-family: 'Unify Sans', sans-serif;
+}
+
+.season path {
+    fill: none;
+    stroke: #ccc;
+}
+
+.season circle {
+    display: none;
+    fill: #222;
+}
+
+.season text {
+    display: none;
+    fill: #222;
+    font-size: 16px;
+    text-shadow: 1px 1px 1px #fff,
+                 2px 1px 1px #fff,
+                 1px 2px 1px #fff,
+                 2px 2px 1px #fff;
+}
+
+.season.active path {
+    stroke: #222;
+    stroke-width: 2px;
+}
+
+.season.active circle {
+    display: block;    
+}
+
+.season.active text {
+    display: block;    
+}
+
+select {
+    display: inline-block;
+    height: calc(2.25rem + 2px);
+    padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+    line-height: 1.5;
+    color: #434343;
+    vertical-align: middle;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    appearance: none;
+    font-size: 1rem;
+    color: #222;
+}
+
+</style>
+</head>
+<body>
+<section>
+    <p>Spicy jalapeno bacon ipsum dolor amet beef turducken shankle, strip steak pork belly kielbasa ham hock porchetta filet mignon landjaeger burgdoggen swine. Hamburger drumstick jerky, strip steak brisket salami pastrami t-bone chuck venison rump prosciutto picanha tenderloin. Brisket flank ham tenderloin bresaola bacon pig burgdoggen, turkey meatball meatloaf frankfurter tri-tip. Pastrami chicken picanha doner, ham hock swine ball tip ribeye pork belly bacon cow strip steak andouille.</p>
+    <p>Beef ribs picanha swine burgdoggen meatball. Kielbasa pancetta tail, sausage tongue fatback turkey jerky pig alcatra short loin pastrami cow. Bresaola frankfurter kielbasa porchetta shank, short loin hamburger. Chicken pastrami filet mignon, beef ribs pork belly tenderloin shoulder pork chop meatball strip steak pancetta rump drumstick.</p>
+    <p>Tail ball tip andouille, spare ribs t-bone beef cow shank. T-bone bresaola buffalo salami short ribs, strip steak pig flank alcatra ball tip. Pancetta porchetta cupim spare ribs venison kevin ground round short ribs turducken ribeye turkey rump. Shank biltong strip steak pork chop. Pig tenderloin spare ribs shankle, chicken corned beef doner t-bone pancetta shank. Corned beef landjaeger pork venison.</p>
+    <p>Ground round jerky shank leberkas kielbasa tenderloin fatback tail kevin alcatra flank salami. Shank pork prosciutto turkey sausage porchetta. Drumstick sausage tenderloin bresaola pastrami jowl. Sausage jowl kielbasa, chicken porchetta filet mignon ham hock jerky prosciutto t-bone pork chop meatball shank flank burgdoggen. Tenderloin turducken cupim tail pork loin spare ribs frankfurter, porchetta beef ribs.</p>        
+</section>
+<div class="graphic">
+    <div class="title">
+        2018 snowfall compared to years past
+    </div>
+    <div class="subtitle">
+        Snow accumulation for every Milwaukee winter since 1939
+    </div>
+    <select id="year-select-box"></select>
+    <svg></svg>
+</div>
+<section>
+    <p>Boudin pork loin pastrami shank sausage hamburger chicken turkey shankle. Leberkas jowl ham hock frankfurter kielbasa. Turducken ribeye biltong, hamburger prosciutto andouille chicken. Pork cow andouille brisket. Shank bresaola beef ribs, chuck filet mignon rump hamburger chicken landjaeger boudin pastrami salami sirloin andouille fatback. Sausage buffalo tail picanha jowl.</p>
+    <p>Drumstick tongue rump buffalo spare ribs meatloaf. Meatloaf pig short ribs filet mignon shankle pastrami. Shankle tongue pork loin spare ribs sirloin prosciutto andouille cow pork chop short ribs. Ribeye tenderloin beef ribs pork belly salami ball tip pork boudin drumstick meatloaf. Leberkas boudin frankfurter tongue buffalo pork loin.        </p>
+    <p>Tri-tip fatback turkey bresaola pork pig capicola tongue tenderloin. Beef ribs burgdoggen venison, t-bone alcatra pancetta beef ground round cow drumstick. Turducken shank porchetta, chuck meatball strip steak jowl ball tip capicola brisket pork loin pig drumstick cupim. Jerky salami ground round turducken kevin short ribs chuck landjaeger doner sirloin, brisket strip steak corned beef t-bone. Boudin kielbasa tri-tip salami venison drumstick. Pork chop kevin ham hock meatball biltong leberkas spare ribs turducken turkey pig boudin jowl frankfurter pork tongue. Capicola flank sirloin kielbasa t-bone, venison beef cow meatball alcatra.</p>
+    <p>Boudin kielbasa tenderloin capicola sirloin tri-tip. Ribeye hamburger rump pork belly tenderloin, leberkas sirloin ball tip t-bone flank ham hock. Porchetta pastrami filet mignon salami drumstick, pork belly short ribs brisket buffalo meatball corned beef bacon short loin frankfurter. Doner brisket picanha, prosciutto strip steak chuck flank. Brisket bacon t-bone pork.</p>
+</section>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+const parseDate = d3.timeParse('%Y-%m-%d');
+
+const margin = {top: 10, right: 30, bottom: 30, left: 50};
+const fullWidth = 800;
+const fullHeight = 500;
+const width = fullWidth - margin.left - margin.right;
+const height = fullHeight - margin.top - margin.bottom;
+
+const graphic = d3.select('.graphic')
+    .style('max-width', `${width}px`);
+
+const svg = graphic.select('svg')
+    .attr('width', fullWidth)
+    .attr('height', fullHeight);
+
+const g = svg.append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+const selectBox = graphic.select('#year-select-box');
+
+const xScale = d3.scaleTime()
+    .range([0, width]);
+
+function xAxis(g) {
+    const axis = d3.axisBottom(xScale)
+        .tickFormat(d3.timeFormat('%B'));
+    g.call(axis);
+}
+
+const xValue = (d) => {
+    const month = d.date.getMonth();
+        const year = month > 4 ? 2001 : 2002;
+        const day = d.date.getDate();
+        const date = new Date(year, month, day);
+        return xScale(date);
+};
+
+const yScale = d3.scaleLinear()
+    .range([height, 0]);
+
+const yAxis = d3.axisLeft(yScale);
+
+const yValue = (d) => {
+    return yScale(d.accumulation);
+};
+
+const drawLine = d3.line()
+    .x(xValue)
+    .y(yValue);
+
+function row(d) {
+    return {
+        date: parseDate(d.date),
+        season: +d.winter_year,
+        accumulation: (+d.snow_accumulation) / 25.4,
+    };
+}
+
+function ready(data) {
+    xScale.domain([new Date(2001, 9, 1), new Date(2002, 3, 30)]);
+    yScale.domain([0, d3.max(data, d => d.accumulation)]);
+
+    const bySeason = d3.nest()
+        .key(d => d.season)
+        .entries(data)
+        .filter(d => d.key !== '1937')
+        .filter(d => d.key !== '1939');
+
+    const seasons = g.append('g').attr('class', 'seasons');
+
+    const season = seasons.selectAll('.season').data(bySeason)
+        .enter().append('g')
+            .attr('class', d => `season season--${d.key}`)
+            .classed('active', d => d.key === '2018');
+        
+    season.append('path')
+        .datum(d => d.values)
+        .attr('d', drawLine);
+    
+    season.append('circle')
+        .datum(d => d.values.slice(-1)[0])
+        .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`)
+        .attr('r', 4);
+    
+    season.append('text')
+        .datum(d => d.values.slice(-1)[0])
+        .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`)
+        .attr('text-anchor', 'middle')
+        .attr('dy', '-0.67em')
+        .text(d => d.season);
+
+    g.append('g')
+        .attr('class', 'axis axis--x')
+        .attr('transform', `translate(0, ${height})`)
+        .call(xAxis);
+    
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .call(yAxis);
+
+    const defaultOption = {selected: true, text: 'Select a winter season...'};
+
+    const seasonOptions = bySeason
+        .map(d => {
+            const thisYear = +d.key;
+            const nextYearAbbrev = (thisYear + 1).toString().slice(-2);
+            return {
+                value: thisYear,
+                text: `${thisYear}-${nextYearAbbrev}`,
+            };
+        });
+    
+    seasonOptions.sort((a, b) => {
+        const y0 = +a.value;
+        const y1 = +b.value;
+        return y1 - y0;
+    });
+
+    const optionData = [defaultOption].concat(seasonOptions);
+
+    const option = selectBox.selectAll('option').data(optionData)
+        .enter().append('option')
+            .attr('selected', d => d.selected)
+            .attr('value', d => d.value)
+            .text(d => d.text);
+
+    function changeSeason(d) {
+        const i = selectBox.node().selectedIndex;
+        const selectedOption = selectBox.node().options[i];
+        const activeSeason = selectedOption.value;
+        
+        season.classed('active', false);
+        season
+            .filter(d => d.key === activeSeason)
+            .classed('active', true)
+            .raise();
+    }
+
+    selectBox.on('change', changeSeason);
+}
+
+d3.csv('snow-accumulation.csv', row)
+    .then(ready);
+
+</script>
+</body>
+</html>
