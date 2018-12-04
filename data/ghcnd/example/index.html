@@ -1,5 +1,6 @@
 <html>
 <head>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <style>
 
 html, body {
@@ -15,6 +16,10 @@ section {
 
 p {
     line-height: 1.4;
+}
+
+.hidden {
+    display: none;
 }
 
 .graphic {
@@ -35,7 +40,29 @@ p {
     margin-bottom: 10px;
 }
 
-.axis .domain {
+.layers {
+    position: relative;
+}
+
+svg {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.html-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.html-layer.no-mouse {
+    pointer-events: none;
+}
+
+.axis--y .domain {
     display: none;
 }
 
@@ -45,19 +72,26 @@ p {
     font-family: 'Unify Sans', sans-serif;
 }
 
+.axis-title {
+    font-size: 14px;
+    font-family: 'Unify Sans', sans-serif;
+    font-weight: bold;
+    fill: #434343;
+}
+
 .season path {
     fill: none;
-    stroke: #ccc;
+    stroke: #ddd;
 }
 
 .season circle {
-    display: none;
-    fill: #222;
+    opacity: 0;
+    fill: steelblue;
 }
 
 .season text {
-    display: none;
-    fill: #222;
+    opacity: 0;
+    fill: steelblue;
     font-size: 16px;
     text-shadow: 1px 1px 1px #fff,
                  2px 1px 1px #fff,
@@ -65,17 +99,42 @@ p {
                  2px 2px 1px #fff;
 }
 
+.season.highlight path {
+    opacity: 0.6;
+    stroke: steelblue;
+    stroke-width: 2px;
+}
+
+.season.highlight circle {
+    opacity: 0.6;
+}
+
+.season.highlight text {
+    opacity: 0.85;
+}
+
 .season.active path {
-    stroke: #222;
+    opacity: 1;
+    stroke: steelblue;
     stroke-width: 2px;
 }
 
 .season.active circle {
-    display: block;    
+    opacity: 1;
 }
 
 .season.active text {
-    display: block;    
+    opacity: 1;
+}
+
+.hover-rect {
+    fill: #fff;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.hover-rect.opaque {
+    opacity: 0.65;
 }
 
 select {
@@ -83,14 +142,50 @@ select {
     height: calc(2.25rem + 2px);
     padding: 0.375rem 1.75rem 0.375rem 0.75rem;
     line-height: 1.5;
-    color: #434343;
+    color: #fff;
     vertical-align: middle;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: steelblue;
+    border: none;
     border-radius: 0.25rem;
     appearance: none;
     font-size: 1rem;
     color: #222;
+}
+
+button {
+    height: calc(2.25rem + 2px);
+    padding: 0.3rem 0.6rem 0.3rem 0.6rem;
+    line-height: 1.5;
+    vertical-align: middle;
+    background: hsla(203, 50%, 87%);
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    color: hsla(203, 60%, 32%);
+    font-weight: bold;
+    outline: 0;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
+}
+
+button:hover {
+    background: hsla(203, 50%, 90%);
+    color: hsla(203, 60%, 25%);
+}
+
+.or-separator {
+    padding: 0px 5px;
+}
+
+.call-to-action {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#year-select-box {
+    display: none;
 }
 
 </style>
@@ -107,10 +202,23 @@ select {
         2018 snowfall compared to years past
     </div>
     <div class="subtitle">
-        Snow accumulation for every Milwaukee winter since 1939
+        Snow accumulation for every winter season in Milwaukee since 1939
     </div>
     <select id="year-select-box"></select>
-    <svg></svg>
+    <div class="layers">
+        <svg></svg>
+        <div class="html-layer">
+            <div class="call-to-action">
+                <button id="take-tour">
+                    Take a tour
+                </button>
+                <span class="or-separator">or</span>
+                <button id="explore">
+                    Explore
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 <section>
     <p>Boudin pork loin pastrami shank sausage hamburger chicken turkey shankle. Leberkas jowl ham hock frankfurter kielbasa. Turducken ribeye biltong, hamburger prosciutto andouille chicken. Pork cow andouille brisket. Shank bresaola beef ribs, chuck filet mignon rump hamburger chicken landjaeger boudin pastrami salami sirloin andouille fatback. Sausage buffalo tail picanha jowl.</p>
@@ -124,7 +232,17 @@ select {
 
 const parseDate = d3.timeParse('%Y-%m-%d');
 
-const margin = {top: 10, right: 30, bottom: 30, left: 50};
+const formatMonth = (date) => {
+    const month = date.getMonth();
+    const abbreviatedMonths = [0, 1, 7, 8, 9, 10, 11];
+    const isAbbreviated = abbreviatedMonths.indexOf(month) > -1;
+    if (isAbbreviated) return `${d3.timeFormat('%b')(date)}.`;
+    return d3.timeFormat('%B')(date);
+};
+
+let defaultYear = '2018';
+
+const margin = {top: 30, right: 40, bottom: 30, left: 50};
 const fullWidth = 800;
 const fullHeight = 500;
 const width = fullWidth - margin.left - margin.right;
@@ -133,44 +251,92 @@ const height = fullHeight - margin.top - margin.bottom;
 const graphic = d3.select('.graphic')
     .style('max-width', `${width}px`);
 
-const svg = graphic.select('svg')
+const layers = graphic.select('.layers')
+    .style('width', `${fullWidth}px`)
+    .style('height', `${fullHeight}px`);
+
+const htmlLayer = layers.select('.html-layer');
+
+const svg = layers.select('svg')
     .attr('width', fullWidth)
     .attr('height', fullHeight);
 
 const g = svg.append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+const hoverRect = svg.append('rect')
+    .attr('class', 'hover-rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', fullWidth)
+    .attr('height', fullHeight)
+    .classed('opaque', true);
+
 const selectBox = graphic.select('#year-select-box');
+
+const callToAction = graphic.select('.call-to-action');
+const takeTourButton = callToAction.select('#take-tour');
+const exploreButton = callToAction.select('#explore');
+const orSeparator = callToAction.select('.or-separator');
+
+const xAccessor = d => d.date;
 
 const xScale = d3.scaleTime()
     .range([0, width]);
 
 function xAxis(g) {
     const axis = d3.axisBottom(xScale)
-        .tickFormat(d3.timeFormat('%B'));
+        .tickFormat(formatMonth);
+    
     g.call(axis);
+
+    g.selectAll('.tick text')
+        .attr('text-anchor', 'start')
+        .attr('dx', 5)
+        .attr('y', 5);
+
+    g.selectAll('.tick line')
+        .attr('y2', 18);
 }
 
 const xValue = (d) => {
-    const month = d.date.getMonth();
-        const year = month > 4 ? 2001 : 2002;
-        const day = d.date.getDate();
-        const date = new Date(year, month, day);
-        return xScale(date);
+    const month = xAccessor(d).getMonth();
+    const year = month > 4 ? 2001 : 2002;
+    const day = xAccessor(d).getDate();
+    const date = new Date(year, month, day);
+    return xScale(date);
 };
+
+const yAccessor = d => d.accumulation;
 
 const yScale = d3.scaleLinear()
     .range([height, 0]);
 
-const yAxis = d3.axisLeft(yScale);
+
+function yAxis(g) {
+    const axis = d3.axisLeft(yScale);
+
+    g.call(axis);
+
+    g.append('text')
+        .attr('class', 'axis-title')
+        .attr('x', 0)
+        .attr('y', 20)
+        .text('Inches');
+}
 
 const yValue = (d) => {
-    return yScale(d.accumulation);
+    return yScale(yAccessor(d));
 };
 
 const drawLine = d3.line()
     .x(xValue)
     .y(yValue);
+
+const tree = d3.quadtree()
+    .x(xValue)
+    .y(yValue)
+    .extent([[-margin.left, -margin.top], [fullWidth, fullHeight]]);
 
 function row(d) {
     return {
@@ -180,22 +346,37 @@ function row(d) {
     };
 }
 
+function explore() {
+    callToAction.classed('hidden', true);
+    hoverRect.classed('opaque', false);
+    htmlLayer.classed('no-mouse', true);
+}
+
+function takeTour() {
+    callToAction.classed('hidden', true);
+    hoverRect.classed('opaque', false);
+    htmlLayer.classed('no-mouse', true);
+}
+
 function ready(data) {
+    data = data
+        .filter(d => d.season !== 1937)
+        .filter(d => d.season !== 1939);
+
     xScale.domain([new Date(2001, 9, 1), new Date(2002, 3, 30)]);
-    yScale.domain([0, d3.max(data, d => d.accumulation)]);
+    yScale.domain([0, d3.max(data, yAccessor)]);
+
+    tree.addAll(data);
 
     const bySeason = d3.nest()
         .key(d => d.season)
-        .entries(data)
-        .filter(d => d.key !== '1937')
-        .filter(d => d.key !== '1939');
+        .entries(data);
 
     const seasons = g.append('g').attr('class', 'seasons');
 
     const season = seasons.selectAll('.season').data(bySeason)
         .enter().append('g')
-            .attr('class', d => `season season--${d.key}`)
-            .classed('active', d => d.key === '2018');
+            .attr('class', d => `season season--${d.key}`);
         
     season.append('path')
         .datum(d => d.values)
@@ -211,7 +392,11 @@ function ready(data) {
         .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`)
         .attr('text-anchor', 'middle')
         .attr('dy', '-0.67em')
-        .text(d => d.season);
+        .html((d) => {
+            const y0 = d.season;
+            const y1 = (y0 + 1).toString().slice(-2);
+            return `${y0}&ndash;${y1}`;
+        });
 
     g.append('g')
         .attr('class', 'axis axis--x')
@@ -221,6 +406,25 @@ function ready(data) {
     g.append('g')
         .attr('class', 'axis axis--y')
         .call(yAxis);
+
+    function activate(year) {
+        season.classed('active', false);
+        season
+            .filter(d => d.key === year)
+            .classed('active', true)
+            .raise();
+    }
+
+    function highlight(year) {
+        season.classed('highlight', false);
+        season
+            .filter(d => d.key === year)
+            .classed('highlight', true)
+            .raise();
+        activate(defaultYear);
+    }
+
+    activate(defaultYear);
 
     const defaultOption = {selected: true, text: 'Select a winter season...'};
 
@@ -251,16 +455,42 @@ function ready(data) {
     function changeSeason(d) {
         const i = selectBox.node().selectedIndex;
         const selectedOption = selectBox.node().options[i];
-        const activeSeason = selectedOption.value;
-        
-        season.classed('active', false);
-        season
-            .filter(d => d.key === activeSeason)
-            .classed('active', true)
-            .raise();
+        defaultYear = selectedOption.value;
+        activate(defaultYear);
+        highlight(false);
     }
 
     selectBox.on('change', changeSeason);
+
+    function mouseenter() {
+        const [mx, my] = d3.mouse(this);
+        const x = mx - margin.left;
+        const y = my - margin.top;
+        const d = tree.find(x, y);
+        const season = d.season.toString();
+        highlight(season);
+    }
+
+    function mousemove() {
+        const [mx, my] = d3.mouse(this);
+        const x = mx - margin.left;
+        const y = my - margin.top;
+        const d = tree.find(x, y);
+        const season = d.season.toString();
+        highlight(season);
+    }
+
+    function mouseleave() {
+        highlight(defaultYear);
+    }
+
+    hoverRect
+        .on('mouseenter', mouseenter)
+        .on('mousemove', mousemove)
+        .on('mouseleave', mouseleave);
+
+    exploreButton.on('click', explore);
+    takeTourButton.on('click', takeTour);
 }
 
 d3.csv('snow-accumulation.csv', row)
