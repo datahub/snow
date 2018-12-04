@@ -5,12 +5,16 @@ const imageWidth = 501;
 const imageHeight = 516;
 const aspectRatio = imageWidth / imageHeight;
 
-const formatMonth = (d) => {
-    const date = new Date(2000, d - 1, 1);
-    return d3.timeFormat('%b')(date);
+const formatMonth = (monthIndex) => {
+    const date = new Date(2018, monthIndex, 1);
+    const month = date.getMonth();
+    const abbreviatedMonths = [0, 1, 7, 8, 9, 10, 11];
+    const isAbbreviated = abbreviatedMonths.indexOf(month) > -1;
+    if (isAbbreviated) return `${d3.timeFormat('%b')(date)}.`;
+    return d3.timeFormat('%B')(date);
 };
 
-const margin = {top: 30, right: 10, bottom: 10, left: 50};
+const margin = {top: 30, right: 10, bottom: 10, left: 60};
 const fullWidth = 700;
 const fullHeight = fullWidth * (550 / 600);
 const width = fullWidth - margin.left - margin.right;

@@ -1,5 +1,11 @@
 import './index.scss';
 
+function clamp(value, min, max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
 const parseDate = d3.timeParse('%Y-%m-%d');
 
 const formatMonth = (date) => {
@@ -25,7 +31,7 @@ const layers = container.select('.layers')
     .style('width', `${fullWidth}px`)
     .style('height', `${fullHeight}px`);
 
-const htmlLayer = layers.select('.html-layer');
+const htmlLayer = layers.select('.layer--html');
 
 const svg = layers.select('svg')
     .attr('width', fullWidth)
@@ -44,10 +50,35 @@ const hoverRect = svg.append('rect')
 
 const selectBox = container.select('#year-select-box');
 
-const callToAction = container.select('.call-to-action');
-const takeTourButton = callToAction.select('#take-tour');
-const exploreButton = callToAction.select('#explore');
-const orSeparator = callToAction.select('.or-separator');
+const callToActionContainer = container.select('.call-to-action-container');
+const takeTourButton = callToActionContainer.select('#take-tour');
+const skipButton = callToActionContainer.select('#skip');
+
+const sequenceContainer = container.select('.sequence-container');
+const sequence = sequenceContainer.select('.sequence')
+    .style('top', `${margin.top}px`)
+    .style('left', `${margin.left}px`)
+    .style('width', `${width}px`)
+    .style('height', `${height}px`);
+const scene = sequence.selectAll('.scene')
+    .datum(function() {
+        return {
+            id: +this.getAttribute('data-id'),
+            season: +this.getAttribute('data-season'),
+        };
+    });
+const annotation = scene.selectAll('.annotation')
+    .datum(function() {
+        return {
+            date: parseDate(this.getAttribute('data-date')),
+            accumulation: +this.getAttribute('data-accumulation'),
+        };
+    });
+
+const sceneButton = sequenceContainer.selectAll('button.scene-button')
+    .datum(function() { return {id: +this.getAttribute('data-id')}; });
+const backButton = sequenceContainer.select('button[data-id="back"]');
+const nextButton = sequenceContainer.select('button[data-id="next"]');
 
 const xAccessor = d => d.date;
 
@@ -116,18 +147,6 @@ function row(d) {
     };
 }
 
-function explore() {
-    callToAction.classed('hidden', true);
-    hoverRect.classed('opaque', false);
-    htmlLayer.classed('no-mouse', true);
-}
-
-function takeTour() {
-    callToAction.classed('hidden', true);
-    hoverRect.classed('opaque', false);
-    htmlLayer.classed('no-mouse', true);
-}
-
 function ready(data) {
     data = data
         .filter(d => d.season !== 1937)
@@ -177,6 +196,10 @@ function ready(data) {
         .attr('class', 'axis axis--y')
         .call(yAxis);
 
+    annotation
+        .style('left', d => `${xValue(d)}px`)
+        .style('top', d => `${yValue(d)}px`);
+
     function activate(year) {
         season.classed('active', false);
         season
@@ -192,6 +215,15 @@ function ready(data) {
             .classed('highlight', true)
             .raise();
         activate(defaultYear);
+    }
+
+    function animate(year) {
+        season
+            .classed('animate', false);
+        season
+            .filter(d => d.key === year)
+            .classed('animate', true)
+            .raise();
     }
 
     activate(defaultYear);
@@ -259,7 +291,54 @@ function ready(data) {
         .on('mousemove', mousemove)
         .on('mouseleave', mouseleave);
 
-    exploreButton.on('click', explore);
+    function skip() {
+        callToActionContainer.classed('hidden', true);
+        sequenceContainer.classed('inactive', true);
+        htmlLayer.classed('no-mouse', true);
+        animate(false);
+    }
+
+    function takeTour() {
+        callToActionContainer.classed('hidden', true);
+        sequenceContainer.classed('inactive', false);
+
+        let id = 1;
+
+        updateScene(id);
+
+        sceneButton.on('click', ({id: newId}) => {
+            id = newId;
+            updateScene(id);
+        });
+
+        backButton.on('click', () => {
+            const newId = id - 1;
+            if (newId > 0 & newId < 4) {
+                id = newId;
+                updateScene(id);
+            }
+        });
+
+        nextButton.on('click', () => {
+            const newId = id + 1;
+            if (newId > 0 & newId < 4) {
+                id = newId;
+                updateScene(id);
+            } else if (newId >= 4) {
+                skip();
+            }
+        })
+    }
+
+    function updateScene(sceneId) {
+        scene.classed('inactive', ({id}) => id !== sceneId);
+        sceneButton.classed('inactive', ({id}) => id !== sceneId);
+        const {season} = scene.data().filter(({id}) => id === sceneId)[0];
+        activate(season.toString());
+        animate(season.toString());
+    }
+
+    skipButton.on('click', skip);
     takeTourButton.on('click', takeTour);
 }
 

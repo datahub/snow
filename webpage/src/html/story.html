@@ -14,16 +14,77 @@
         </div>
         <select id="year-select-box"></select>
         <div class="layers">
-            <svg></svg>
-            <div class="html-layer">
-                <div class="call-to-action">
-                    <button id="take-tour">
-                        Take a tour
-                    </button>
-                    <span class="or-separator">or</span>
-                    <button id="explore">
-                        Explore
-                    </button>
+            <svg class="layer"></svg>
+            <div class="layer layer--html">
+                <div class="call-to-action-container">
+                    <div class="button-group">
+                        <button id="take-tour">
+                            Take a tour
+                        </button>
+                        <span class="or-separator">or</span>
+                        <button id="skip">
+                            Skip
+                        </button>
+                    </div>
+                </div>
+
+                <div class="sequence-container inactive">
+                    <div class="sequence">
+                        <div class="scene inactive delay-1000" data-id="1" data-season="2007">
+                            <div class="annotation annotation--boxed"
+                                data-date="2008-10-10"
+                                data-accumulation="95"
+                                data-anchor="top-left"
+                                style="width: 300px;">
+                                Nearly 100 inches of snow fell on Milwaukee during the winter of 2007&ndash;08. This was the snowiest winter since 1939.
+                            </div>
+                            <div class="annotation"
+                                data-date="2008-02-08"
+                                data-accumulation="60"
+                                data-anchor="left-middle"
+                                style="max-width: 180px;">
+                                <i class="fas fa-long-arrow-alt-left"></i>
+                                A blizzard dumped nearly a foot
+                                of snow on Feb. 6th, 2008.
+                            </div>
+                            <div class="annotation"
+                                data-date="2008-03-19"
+                                data-accumulation="91"
+                                data-anchor="right-middle"
+                                style="width: 175px;">
+                                Over 11 inches of snow on March 21st.
+                                <i class="fas fa-long-arrow-alt-right"></i> 
+                            </div>
+                        </div>
+                        <div class="scene inactive delay-1000" data-season="1967" data-id="2">
+                            <div class="annotation annotation--boxed"
+                                data-date="1967-10-10"
+                                data-accumulation="95"
+                                data-anchor="top-left"
+                                style="width: 300px;">
+                                On the flipside there was the winter of 1967&ndash;68. About a foot of snow fell all winter long.
+                            </div>
+                        </div>
+                        <div class="scene inactive delay-500" data-season="2018" data-id="3">
+                            <div class="annotation annotation--boxed"
+                                data-date="2018-10-10"
+                                data-accumulation="95"
+                                data-anchor="top-left"
+                                style="width: 300px;">
+                                Here's how much snow has fallen this winter. Click next to compare this season to past winters, going back to 1938.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button data-id="1" class="scene-button">1</button>
+                        <button data-id="2" class="scene-button inactive">2</button>
+                        <button data-id="3" class="scene-button inactive">3</button>
+                        <div class="smooshed-buttons">
+                            <button data-id="back"><i class="fas fa-caret-left"></i></button>
+                            <button data-id="next">Next <i class="fas fa-caret-right"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

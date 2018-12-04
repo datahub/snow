@@ -1,3 +1,5 @@
+$white-text-shadow: 1px 1px 1px #fff, 2px 1px 1px #fff, 1px 2px 1px #fff, 2px 2px 1px #fff;
+
 #snow-accumulation-in-milwaukee {
     .axis--y .domain {
         display: none;
@@ -30,10 +32,7 @@
         opacity: 0;
         fill: steelblue;
         font-size: 16px;
-        text-shadow: 1px 1px 1px #fff,
-                    2px 1px 1px #fff,
-                    1px 2px 1px #fff,
-                    2px 2px 1px #fff;
+        text-shadow: $white-text-shadow;
     }
 
     .season.highlight path {
@@ -64,28 +63,146 @@
         opacity: 1;
     }
 
+    @keyframes draw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .season.animate path {
+        stroke-dasharray: 2000;
+        stroke-dashoffset: 2000;
+        animation: draw 3s linear forwards;
+    }
+
     .hover-rect {
         fill: #fff;
         opacity: 0;
-        transition: opacity 0.5s;
-    }
-
-    .hover-rect.opaque {
-        opacity: 0.65;
     }
 
     .or-separator {
         padding: 0px 5px;
     }
 
-    .call-to-action {
+    .call-to-action-container {
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
+        background-color: hsla(0, 0%, 100%, 0.5);
+        padding: 20px;
+        border-radius: 5px;
+        font-size: 1.5rem;
+
+        button {
+            font-size: 1.5rem;
+        }
+
+        .button-group {
+            text-align: center;
+        }
     }
 
+    .sequence-container {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.5s;
+        visibility: visible;
+
+        .button-group {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translate(-50%, 0px);
+            margin-top: 15px;
+
+            .smooshed-buttons {
+                margin-left: 15px;
+            }
+        }
+
+        .sequence,
+        .scene {
+            position: absolute;
+        }
+
+        .scene {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s;
+
+            .annotation {
+                position: absolute;
+                color: #434343;
+                font-size: 16px;
+                line-height: 1.2;
+                text-shadow: $white-text-shadow;
+
+                i {
+                    position: absolute;
+                    font-size: 20px;
+                }
+            }
+
+            .annotation--boxed {
+                padding: 10px;
+                box-sizing: border-box;
+                box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
+                border: 1px solid #ccc;
+                border-radius: 0.3rem;
+            }
+
+            .annotation[data-anchor='left-middle'] {
+                transform: translate(0px, -50%);
+                padding-left: 25px;
+                i {
+                    left: 0px;
+                    top: 50%;
+                    transform: translate(0px, -50%);
+                }
+            }
+
+            .annotation[data-anchor='right-middle'] {
+                transform: translate(-100%, -50%);
+                padding-right: 25px;
+                text-align: right;
+                i {
+                    right: 0px;
+                    top: 50%;
+                    transform: translate(0px, -50%);
+                }
+            }
+        }
+
+        .scene.inactive {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scene.delay-1000 {
+            transition-delay: 1s;
+        }
+        .scene.delay-500 {
+            transition-delay: 0.5s;
+        }
+    }
+
+    .sequence-container.inactive {
+        opacity: 0;
+        visibility: hidden;
+    }
+    
     #year-select-box {
         display: none;
+    }
+
+    .no-mouse {
+        pointer-events: none;
     }
 }
