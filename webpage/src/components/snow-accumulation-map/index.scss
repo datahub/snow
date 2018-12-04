@@ -1,0 +1,21 @@
+#snow-accumulation-across-wisconsin {        
+    .axis .domain {
+        display: none;
+    }
+
+    .axis .tick line {
+        display: none;
+    }
+
+    .axis .tick text {
+        fill: #666;
+        font-size: 16px;
+        font-family: 'Unify Sans', sans-serif;
+    }
+
+    .border {
+        fill: none;
+        stroke: #ccc;
+        border-width: 0.5px;
+    }
+}

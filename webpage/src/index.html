@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head>
+    <%= require('html-loader!./html/metadata.html') %>
+    <link rel="stylesheet" href="<%=htmlWebpackPlugin.files.chunks.main.css %>">
+</head>
+<body data-content-byline="" data-content-cst="" data-content-ssts="">
+    <%= require('html-loader?attrs=img!./html/story.html') %>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
+    <%= require('html-loader!./html/analytics.html') %>
+    <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+</body>
+</html>

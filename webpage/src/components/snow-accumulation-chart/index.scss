@@ -1,0 +1,91 @@
+#snow-accumulation-in-milwaukee {
+    .axis--y .domain {
+        display: none;
+    }
+
+    .axis .tick text {
+        fill: #666;
+        font-size: 16px;
+        font-family: 'Unify Sans', sans-serif;
+    }
+
+    .axis-title {
+        font-size: 14px;
+        font-family: 'Unify Sans', sans-serif;
+        font-weight: bold;
+        fill: #434343;
+    }
+
+    .season path {
+        fill: none;
+        stroke: #ddd;
+    }
+
+    .season circle {
+        opacity: 0;
+        fill: steelblue;
+    }
+
+    .season text {
+        opacity: 0;
+        fill: steelblue;
+        font-size: 16px;
+        text-shadow: 1px 1px 1px #fff,
+                    2px 1px 1px #fff,
+                    1px 2px 1px #fff,
+                    2px 2px 1px #fff;
+    }
+
+    .season.highlight path {
+        opacity: 0.6;
+        stroke: steelblue;
+        stroke-width: 2px;
+    }
+
+    .season.highlight circle {
+        opacity: 0.6;
+    }
+
+    .season.highlight text {
+        opacity: 0.85;
+    }
+
+    .season.active path {
+        opacity: 1;
+        stroke: steelblue;
+        stroke-width: 2px;
+    }
+
+    .season.active circle {
+        opacity: 1;
+    }
+
+    .season.active text {
+        opacity: 1;
+    }
+
+    .hover-rect {
+        fill: #fff;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+    .hover-rect.opaque {
+        opacity: 0.65;
+    }
+
+    .or-separator {
+        padding: 0px 5px;
+    }
+
+    .call-to-action {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #year-select-box {
+        display: none;
+    }
+}

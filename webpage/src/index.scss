@@ -1,0 +1,85 @@
+body {
+  font-size: 20px;
+  font-family: 'Unify Sans', sans-serif;
+  padding: 0;
+  margin: 0;
+  color: #434343;
+}
+
+section {
+  max-width: 650px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+p {
+  line-height: 1.4;
+}
+
+.graphic {
+  margin: 40px auto;
+
+  .title {
+    font-size: 26px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 5px;
+  }
+  
+  .subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+
+  .layers {
+    position: relative;
+
+    .layer {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+select {
+  display: inline-block;
+  height: calc(2.25rem + 2px);
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+  line-height: 1.5;
+  vertical-align: middle;
+  background: steelblue;
+  border: none;
+  border-radius: 0.25rem;
+  appearance: none;
+  font-size: 1rem;
+  color: #222;
+}
+
+button {
+  height: calc(2.25rem + 2px);
+  padding: 0.3rem 0.6rem 0.3rem 0.6rem;
+  line-height: 1.5;
+  vertical-align: middle;
+  background: hsla(203, 50%, 87%, 1);
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  color: hsla(203, 60%, 32%, 1);
+  font-weight: bold;
+  outline: 0;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
+}
+
+button:hover {
+  background: hsla(203, 50%, 90%, 1);
+  color: hsla(203, 60%, 25%, 1);
+}
+
+.hidden {
+  display: none;
+}
