@@ -7,10 +7,10 @@
     </section>
     <div class="graphic" id="snow-accumulation-in-milwaukee">
         <div class="title">
-            2018 snowfall compared to years past
+            A history of snowfall in Milwaukee
         </div>
         <div class="subtitle">
-            Snow accumulation for every winter season in Milwaukee since 1939
+            Snow accumulation for every winter season in Milwaukee since 1940
         </div>
         <div class="layers">
             <svg class="layer"></svg>
@@ -22,12 +22,38 @@
                         </button>
                         <span class="or-separator">or</span>
                         <button id="skip">
-                            Skip
+                            Browse
                         </button>
                     </div>
                 </div>
 
-                <div class="sequence-container inactive">
+                <div class="button-group button-group--explore">
+                    <form class="select-form">
+                        <div class="title">Change season</div>
+                        <select name="season-selector" id="season-selector"></select>
+                    </form>
+                    
+                    <form class="select-form">
+                        <div class="title">Change view</div>
+                        <select name="view-selector" id="view-selector"></select>
+                    </form>
+
+                    <button data-id="replay-tour">Replay tour <i class="fas fa-redo"></i></button>
+                </div>
+
+                <div class="button-group button-group--tour">
+                    <button data-id="1" class="scene-button">1</button>
+                    <button data-id="2" class="scene-button inactive">2</button>
+                    <button data-id="3" class="scene-button inactive">3</button>
+                    <button data-id="4" class="scene-button inactive">4</button>
+                    <button data-id="5" class="scene-button inactive">5</button>
+                    <div class="smooshed-buttons">
+                        <button data-id="back"><i class="fas fa-caret-left"></i></button>
+                        <button data-id="next">Next <i class="fas fa-caret-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="sequence-container hidden">
                     <div class="sequence">
                         <!-- <div class="scene inactive" data-id="1">
                             <div class="annotation annotation--big"
@@ -51,7 +77,7 @@
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 300px;">
-                                Here's 2007&ndash;08, the snowiest winter in Milwaukee since the 1940's. About 100 inches of snow fell that season.
+                                This is the winter of 2007&ndash;08, the snowiest winter in Milwaukee since 1940. About 100 inches of snow fell that season.
                             </div>
                             <div class="annotation"
                                 data-date="2008-02-08"
@@ -59,14 +85,14 @@
                                 data-anchor="left-middle"
                                 style="max-width: 180px;">
                                 <i class="fas fa-long-arrow-alt-left"></i>
-                                <b>Feb. 6th, 2008</b><br/>A blizzard dumped nearly a foot of snow.
+                                <b>Feb. 6th, 2008</b><br/>Blizzard dumps nearly a foot of snow.
                             </div>
                             <div class="annotation"
                                 data-date="2008-03-19"
                                 data-accumulation="93"
                                 data-anchor="right-middle"
                                 style="width: 200px;">
-                                <b>March 21st, 2008</b><br/>Over 11 inches of snow falls on Milwaukee.
+                                <b>March 21st, 2008</b><br/>More than 11 inches of snow falls on Milwaukee.
                                 <i class="fas fa-long-arrow-alt-right"></i> 
                             </div>
                         </div>
@@ -76,7 +102,7 @@
                                 data-accumulation="30"
                                 data-anchor="bottom-left"
                                 style="width: 300px;">
-                                This is the winter of 1967&ndash;68. Only about a foot of snow fell all winter long.
+                                Here's 1967&ndash;68, the least snowy winter since 1940. Only about a foot of snow fell all winter long.
                             </div>
                         </div>
                         <div class="scene inactive delay-1000" data-season="average" data-background-seasons="1967,2007" data-id="3">
@@ -85,7 +111,7 @@
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 300px;">
-                                Here's what the average of the last 50 winters looks like.
+                                The average winter in Milwaukee sees about 48 inches of snow accumulation.
                             </div>
                         </div>
                         <div class="scene inactive delay-500" data-season="2018" data-background-seasons="1967,2007,average" data-id="4">
@@ -103,24 +129,10 @@
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 350px;">
-                                This is the snow accumulation for all winters since 1939. Click next to explore.
+                                And this is how 2018&ndash;19 compares to every winter since 1940. Click next to browse the historical snowfall for Milwaukee.
                             </div>
                         </div>
                     </div>
-
-                    <div class="button-group">
-                        <button data-id="1" class="scene-button">1</button>
-                        <button data-id="2" class="scene-button inactive">2</button>
-                        <button data-id="3" class="scene-button inactive">3</button>
-                        <button data-id="4" class="scene-button inactive">4</button>
-                        <button data-id="5" class="scene-button inactive">5</button>
-                        <div class="smooshed-buttons">
-                            <button data-id="back"><i class="fas fa-caret-left"></i></button>
-                            <button data-id="next">Next <i class="fas fa-caret-right"></i></button>
-                        </div>
-                    </div>
-
-                    <select id="year-select-box"></select>
                 </div>
             </div>
         </div>
