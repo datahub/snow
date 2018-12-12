@@ -12,7 +12,6 @@
         <div class="subtitle">
             Snow accumulation for every winter season in Milwaukee since 1939
         </div>
-        <select id="year-select-box"></select>
         <div class="layers">
             <svg class="layer"></svg>
             <div class="layer layer--html">
@@ -30,13 +29,29 @@
 
                 <div class="sequence-container inactive">
                     <div class="sequence">
-                        <div class="scene inactive delay-1000" data-id="1" data-season="2007">
+                        <!-- <div class="scene inactive" data-id="1">
+                            <div class="annotation annotation--big"
+                                data-date="2008-10-03"
+                                data-accumulation="80"
+                                data-anchor="left">
+                                <i class="fas fa-long-arrow-alt-up wiggle-fade-up"></i> 
+                                More snow accumulation
+                            </div>
+                            <div class="annotation annotation--big annotation--winter-season"
+                                data-date="2008-01-15"
+                                data-accumulation="50"
+                                data-anchor="center"
+                                style="width: 300px;">
+                                <span>The winter season</span>
+                            </div>
+                        </div> -->
+                        <div class="scene inactive delay-1000" data-season="2007" data-id="1">
                             <div class="annotation annotation--boxed"
                                 data-date="2008-10-10"
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 300px;">
-                                Nearly 100 inches of snow fell on Milwaukee during the winter of 2007&ndash;08. This was the snowiest winter since 1939.
+                                Here's 2007&ndash;08, the snowiest winter in Milwaukee since the 1940's. About 100 inches of snow fell that season.
                             </div>
                             <div class="annotation"
                                 data-date="2008-02-08"
@@ -44,34 +59,51 @@
                                 data-anchor="left-middle"
                                 style="max-width: 180px;">
                                 <i class="fas fa-long-arrow-alt-left"></i>
-                                A blizzard dumped nearly a foot
-                                of snow on Feb. 6th, 2008.
+                                <b>Feb. 6th, 2008</b><br/>A blizzard dumped nearly a foot of snow.
                             </div>
                             <div class="annotation"
                                 data-date="2008-03-19"
-                                data-accumulation="91"
+                                data-accumulation="93"
                                 data-anchor="right-middle"
-                                style="width: 175px;">
-                                Over 11 inches of snow on March 21st.
+                                style="width: 200px;">
+                                <b>March 21st, 2008</b><br/>Over 11 inches of snow falls on Milwaukee.
                                 <i class="fas fa-long-arrow-alt-right"></i> 
                             </div>
                         </div>
-                        <div class="scene inactive delay-1000" data-season="1967" data-id="2">
+                        <div class="scene inactive delay-1000" data-season="1967" data-background-seasons="2007" data-id="2">
                             <div class="annotation annotation--boxed"
-                                data-date="1967-10-10"
-                                data-accumulation="95"
-                                data-anchor="top-left"
+                                data-date="1968-04-30"
+                                data-accumulation="30"
+                                data-anchor="bottom-left"
                                 style="width: 300px;">
-                                On the flipside there was the winter of 1967&ndash;68. About a foot of snow fell all winter long.
+                                This is the winter of 1967&ndash;68. Only about a foot of snow fell all winter long.
                             </div>
                         </div>
-                        <div class="scene inactive delay-500" data-season="2018" data-id="3">
+                        <div class="scene inactive delay-1000" data-season="average" data-background-seasons="1967,2007" data-id="3">
                             <div class="annotation annotation--boxed"
                                 data-date="2018-10-10"
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 300px;">
-                                Here's how much snow has fallen this winter. Click next to compare this season to past winters, going back to 1938.
+                                Here's what the average of the last 50 winters looks like.
+                            </div>
+                        </div>
+                        <div class="scene inactive delay-500" data-season="2018" data-background-seasons="1967,2007,average" data-id="4">
+                            <div class="annotation annotation--boxed"
+                                data-date="2018-10-10"
+                                data-accumulation="95"
+                                data-anchor="top-left"
+                                style="width: 300px;">
+                                Here's how much snow has fallen this winter.
+                            </div>
+                        </div>
+                        <div class="scene inactive delay-500" data-season="2018" data-background-seasons="all" data-id="5">
+                            <div class="annotation annotation--boxed"
+                                data-date="2018-10-10"
+                                data-accumulation="95"
+                                data-anchor="top-left"
+                                style="width: 350px;">
+                                This is the snow accumulation for all winters since 1939. Click next to explore.
                             </div>
                         </div>
                     </div>
@@ -80,11 +112,15 @@
                         <button data-id="1" class="scene-button">1</button>
                         <button data-id="2" class="scene-button inactive">2</button>
                         <button data-id="3" class="scene-button inactive">3</button>
+                        <button data-id="4" class="scene-button inactive">4</button>
+                        <button data-id="5" class="scene-button inactive">5</button>
                         <div class="smooshed-buttons">
                             <button data-id="back"><i class="fas fa-caret-left"></i></button>
                             <button data-id="next">Next <i class="fas fa-caret-right"></i></button>
                         </div>
                     </div>
+
+                    <select id="year-select-box"></select>
                 </div>
             </div>
         </div>

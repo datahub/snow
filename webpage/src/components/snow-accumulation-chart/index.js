@@ -60,13 +60,17 @@ const sequence = sequenceContainer.select('.sequence')
     .style('left', `${margin.left}px`)
     .style('width', `${width}px`)
     .style('height', `${height}px`);
+
 const scene = sequence.selectAll('.scene')
     .datum(function() {
-        return {
-            id: +this.getAttribute('data-id'),
-            season: +this.getAttribute('data-season'),
-        };
+        const id = +this.getAttribute('data-id');
+        const season = +this.getAttribute('data-season');
+        const backgroundSeasons = (this.getAttribute('data-background-seasons') || 'none')
+            .split(',')
+            .map(d => d.trim());
+        return {id, season, backgroundSeasons};
     });
+
 const annotation = scene.selectAll('.annotation')
     .datum(function() {
         return {
@@ -112,7 +116,6 @@ const yAccessor = d => d.accumulation;
 
 const yScale = d3.scaleLinear()
     .range([height, 0]);
-
 
 function yAxis(g) {
     const axis = d3.axisLeft(yScale);
@@ -226,6 +229,21 @@ function ready(data) {
             .raise();
     }
 
+    function backgroundify(years) {
+        if (years[0] === 'none') {
+            season.classed('backgroundified', false);
+        } else if (years[0] === 'all') {
+            season.classed('backgroundified', true);
+        } else {
+            season.classed('backgroundified', false);
+            season
+                .filter(d => years.indexOf(d.key) > -1)
+                .classed('backgroundified', true)
+                .raise();
+        }
+        
+    }
+
     activate(defaultYear);
 
     const defaultOption = {selected: true, text: 'Select a winter season...'};
@@ -299,6 +317,9 @@ function ready(data) {
     }
 
     function takeTour() {
+        const numScenes = 5;
+        const n = numScenes + 1;
+
         callToActionContainer.classed('hidden', true);
         sequenceContainer.classed('inactive', false);
 
@@ -313,7 +334,7 @@ function ready(data) {
 
         backButton.on('click', () => {
             const newId = id - 1;
-            if (newId > 0 & newId < 4) {
+            if (newId > 0 & newId < n) {
                 id = newId;
                 updateScene(id);
             }
@@ -321,10 +342,10 @@ function ready(data) {
 
         nextButton.on('click', () => {
             const newId = id + 1;
-            if (newId > 0 & newId < 4) {
+            if (newId > 0 & newId < n) {
                 id = newId;
                 updateScene(id);
-            } else if (newId >= 4) {
+            } else if (newId >= n) {
                 skip();
             }
         })
@@ -332,8 +353,13 @@ function ready(data) {
 
     function updateScene(sceneId) {
         scene.classed('inactive', ({id}) => id !== sceneId);
-        sceneButton.classed('inactive', ({id}) => id !== sceneId);
-        const {season} = scene.data().filter(({id}) => id === sceneId)[0];
+        sceneButton.classed('inactive', ({id}) => id !== sceneId);    
+        const {
+            season,
+            backgroundSeasons
+        } = scene.data().filter(({id}) => id === sceneId)[0];
+
+        backgroundify(backgroundSeasons);
         activate(season.toString());
         animate(season.toString());
     }
