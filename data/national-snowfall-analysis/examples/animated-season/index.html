@@ -1,0 +1,20 @@
+<html>
+<head>
+
+</head>
+<body>
+<svg></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+const margin = {top: 10, right: 10, bottom: 10, left: 10};
+const width = 450 - margin.left - margin.right;
+const height = 600 - margin.top - margin.bottom;
+
+const svg = d3.select('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom);
+
+</script>
+</body>
+</html>

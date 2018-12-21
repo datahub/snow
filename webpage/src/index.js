@@ -1,7 +1,8 @@
-import {default as initChart} from './components/snow-accumulation-chart/';
-import {default as initMap} from './components/snow-accumulation-map/';
+import {default as initHistoryChart} from './components/history-chart/';
+import {default as initMonthlyMaps} from './components/monthly-maps/';
+
 
 import './index.scss';
 
-initChart();
-initMap();
+initHistoryChart();
+initMonthlyMaps();

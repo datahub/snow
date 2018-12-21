@@ -6,10 +6,22 @@
     <link rel="stylesheet" href="<%=htmlWebpackPlugin.files.chunks.main.css %>">
 </head>
 <body data-content-byline="" data-content-cst="" data-content-ssts="">
+    <script src="/shared/header/v5/header.js"></script>
     <%= require('html-loader?attrs=img!./html/story.html') %>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
     <%= require('html-loader!./html/analytics.html') %>
     <script src="<%= htmlWebpackPlugin.files.chunks.main.entry %>"></script>
+
+    <script id="footer-script" src="/shared/footer/v1/footer.js" 
+        data-first-link="https://projects.jsonline.com/news/2018/10/5/high-student-turnover-in-milwaukee-stalls-achievement-despite-reforms.html"
+        data-first-headline="Student turnover in Milwaukee stalls achievement, despite well-planned school reforms"
+        data-first-image="https://projects.jsonline.com/news/2018/10/5/media/carver-kapers-2-800.jpg"
+        data-first-desc="Evictions. Homelessness. Discontent with schools. Student mobility in Milwaukee slows learning and challenges classrooms."
+        data-second-link="https://www.jsonline.com/story/weather/2018/12/19/white-christmas-wisconsin-chances-arent-looking-good/2356101002/"
+        data-second-headline="Dreaming of a white Christmas? It probably won't happen in southern Wisconsin"
+        data-second-image="https://projects.jsonline.com/news/2018/10/5/media/database-promo.jpg"
+        data-second-desc="Search our database and see how your school compares to the state averages for turnover and performance.">
+    </script>
 </body>
 </html>

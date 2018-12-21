@@ -1,0 +1,352 @@
+$white-text-shadow: 1px 1px 1px #fff, 2px 1px 1px #fff, 1px 2px 1px #fff, 2px 2px 1px #fff;
+$main-color: hsla(220, 31%, 47%, 1);
+
+#history-chart {
+    z-index: 100;
+    margin-bottom: 100px;
+
+    .axis--y .domain {
+        display: none;
+    }
+
+    .axis .tick text {
+        fill: #666;
+        font-size: 16px;
+        font-family: 'Unify Sans', sans-serif;
+    }
+
+    .axis-title {
+        font-size: 14px;
+        font-family: 'Unify Sans', sans-serif;
+        font-weight: bold;
+        fill: #434343;
+    }
+
+    .season path {
+        fill: none;
+        stroke: #ddd;
+        stroke-opacity: 0;
+        transition: stroke-opacity 0.25s;
+    }
+
+    .season circle {
+        opacity: 0;
+        fill: $main-color;
+    }
+
+    .season text {
+        opacity: 0;
+        fill: $main-color;
+        font-size: 14px;
+        text-shadow: $white-text-shadow;
+    }
+
+    .season.highlight path {
+        opacity: 0.6;
+        stroke: $main-color;
+        stroke-width: 2px;
+        stroke-opacity: 1;
+    }
+
+    .season.highlight circle {
+        opacity: 0.6;
+    }
+
+    .season.highlight text {
+        opacity: 0.85;
+    }
+
+    .season.backgroundified path {
+        stroke-opacity: 1;
+    }
+
+    .season.active path {
+        opacity: 1;
+        stroke: $main-color;
+        stroke-width: 2px;
+        stroke-opacity: 1;
+    }
+
+    .season.active circle {
+        opacity: 1;
+    }
+
+    .season.active text {
+        opacity: 1;
+    }
+
+    @keyframes draw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .season.animate path {
+        stroke-dasharray: 2000;
+        stroke-dashoffset: 2000;
+        animation: draw 3s linear forwards;
+    }
+
+    .hover-rect {
+        fill: #fff;
+        opacity: 0;
+    }
+
+    .or-separator {
+        padding: 0px 5px;
+    }
+
+    .call-to-action-container {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: hsla(0, 0%, 100%, 0.5);
+        padding: 20px;
+        border-radius: 5px;
+        font-size: 1.25rem;
+
+        button {
+            font-size: 1.25rem;
+        }
+
+        .button-group {
+            text-align: center;
+        }
+    }
+
+    .button-group {
+        transition: visibility 0.25s, opacity 0.25s;
+    }
+
+    .button-group--tour,
+    .button-group--explore {
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translate(-50%, 0px);
+        margin-top: 15px;
+        width: 100%;
+        text-align: center;
+
+        .smooshed-buttons {
+            margin-left: 15px;
+        }
+    }
+
+    .button-group--explore {
+        margin-top: 25px;
+        .select-form,
+        button {
+            margin: 0px 5px;
+        }
+    }
+
+    .sequence-container {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        transition: visibility 0.5s, opacity 0.5s;
+
+        .sequence,
+        .scene {
+            position: absolute;
+        }
+
+        @keyframes wiggle-fade-right {
+            0% {
+                opacity: 0;
+                left: -15px;
+            }
+            75% {
+                opacity: 1;
+                left: 0px;
+            }
+            100% {
+                opacity: 0;
+                left: 0px;
+            }
+        }
+
+        .wiggle-fade-right {
+            position: relative;
+            animation-name: wiggle-fade-right;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes wiggle-fade-up {
+            0% {
+                opacity: 0;
+                bottom: -10px;
+            }
+            75% {
+                opacity: 1;
+                bottom: 0px;
+            }
+            100% {
+                opacity: 0;
+                bottom: 0px;
+            }
+        }
+
+        .wiggle-fade-up {
+            position: relative;
+            animation-name: wiggle-fade-up;
+            animation-duration: 2s;
+            animation-iteration-count: infinite;
+        }
+
+        .scene {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            transition: visibility 0.5s, opacity 0.5s;
+
+            .annotation {
+                position: absolute;
+                color: #434343;
+                font-size: 14px;
+                line-height: 1.2;
+                text-shadow: $white-text-shadow;
+
+                i {
+                    position: absolute;
+                    font-size: 20px;
+                }
+            }
+
+            .annotation--big {
+                font-size: 24px;
+                i {
+                    font-size: 24px;
+                }
+            }
+
+            .annotation--winter-season {
+                line-height: 0.2;
+                text-align: center;
+                width: 100%;
+
+                span {
+                    display: inline-block;
+                    position: relative;
+                }
+
+                span:before,
+                span:after {
+                    content: '';
+                    position: absolute;
+                    height: 5px;
+                    border-bottom: 1px solid $main-color;
+                    border-top: 1px solid $main-color;
+                    top: 0;
+                    width: 100%;
+                }
+
+                span:before {
+                    right: 100%;
+                    margin-right: 15px;
+                }
+
+                span:after {
+                    left: 100%;
+                    margin-left: 15px;
+                }
+            }
+
+            .annotation[data-anchor='left-middle'] {
+                transform: translate(0px, -50%);
+                padding-left: 25px;
+                i {
+                    left: 0px;
+                    top: 50%;
+                    transform: translate(0px, -50%);
+                }
+            }
+
+            .annotation[data-anchor='right-middle'] {
+                transform: translate(-100%, -50%);
+                padding-right: 25px;
+                text-align: right;
+                i {
+                    right: 0px;
+                    top: 50%;
+                    transform: translate(0px, -50%);
+                }
+            }
+
+            .annotation[data-anchor='bottom-middle'] {
+                transform: translate(-50%, -100%);
+                padding-bottom: 25px;
+                text-align: center;
+                i {
+                    top: 100%;
+                    left: 50%;
+                    transform: translate(-50%, -100%);
+                }
+            }
+
+            .annotation[data-anchor='bottom-left'] {
+                transform: translate(-100%, -100%);
+                text-align: right;
+            }
+
+            .annotation[data-anchor='top-middle'] {
+                transform: translate(-50%, 100%);
+                padding-top: 25px;
+                text-align: center;
+                i {
+                    bottom: 100%;
+                    left: 50%;
+                    transform: translate(-50%, 100%);
+                }
+            }
+
+            .annotation[data-anchor='center'] {
+                text-align: center;
+                transform: translate(-50%, -50%);
+                i {
+                    position: relative;
+                    font-size: inherit;
+                    margin: 0px 5px;
+                }
+            }
+
+            .annotation--boxed {
+                padding: 10px;
+                font-size: 18px;
+                box-sizing: border-box;
+                box-shadow: 0px 4px 6px hsla(0, 0%, 0%, 0.2);
+                border: 1px solid #ccc;
+                border-radius: 0.3rem;
+                background: #fff;
+            }
+        }
+
+        .scene.inactive {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scene.inactive.delay-1000,
+        .scene.inactive.delay-500 {
+            transition-delay: 0s;
+        }
+
+        .scene.delay-1000 {
+            transition-delay: 1s;
+        }
+        .scene.delay-500 {
+            transition-delay: 0.5s;
+        }
+    }
+
+    .no-mouse {
+        pointer-events: none;
+    }
+}

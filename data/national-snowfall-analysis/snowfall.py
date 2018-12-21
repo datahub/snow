@@ -50,9 +50,17 @@ def build_url(date, hour, length):
         'day': '{day:0>2}'.format(day=date.day),
     }
     if (length == 'season'):
-        parameters.update({'hour': '12'})
+        start_year = date.year
+        end_year = str(date.year)
+        if (date.month < 8):
+            start_year = str(start_year - 1)
+        parameters.update({
+            'hour': '12',
+            'start_year': start_year,
+            'end_year': end_year,
+        })
         template = ('https://www.nohrsc.noaa.gov/snowfall/data/{year}{month}/'
-                    'sfav2_CONUS_{year}093012_to_{year}{month}{day}{hour}.tif')
+                    'sfav2_CONUS_{start_year}093012_to_{end_year}{month}{day}{hour}.tif')
     else:
         parameters.update({
             'length': length,
