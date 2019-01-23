@@ -148,6 +148,7 @@ $main-color: hsla(220, 31%, 47%, 1);
         top: 0px;
         width: 100%;
         height: 100%;
+        overflow: hidden;
         transition: visibility 0.5s, opacity 0.5s;
 
         .sequence,
@@ -292,6 +293,16 @@ $main-color: hsla(220, 31%, 47%, 1);
             }
 
             .annotation[data-anchor='bottom-left'] {
+                transform: translate(0px, -100%);
+                text-align: left;
+            }
+
+            .annotation[data-anchor='middle-left'] {
+                transform: translate(0px, -50%);
+                text-align: left;
+            }
+
+            .annotation[data-anchor='bottom-right'] {
                 transform: translate(-100%, -100%);
                 text-align: right;
             }
@@ -348,5 +359,34 @@ $main-color: hsla(220, 31%, 47%, 1);
 
     .no-mouse {
         pointer-events: none;
+    }
+}
+
+#history-chart.MSIE {
+    .season.animate path {
+        stroke-dashoffset: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    #history-chart {
+        .axis-title,
+        .axis .tick text {
+            font-size: 12px;
+        }
+        .sequence-container {
+            .scene {
+                .annotation--boxed {
+                    padding: 5px;
+                    font-size: 14px;
+                    max-width: 80%;
+                    background: rgba(255, 255, 255, 0.75);
+                }
+
+                .annotation[data-anchor-mobile='top-left'] {
+                    transform: translate(0%, 100%);
+                }
+            }
+        }
     }
 }

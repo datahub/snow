@@ -1,0 +1,149 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<style>
+
+canvas {
+    font-family: 'Font Awesome 5 Free';
+    font-size: 12px;
+    font-weight: 400;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    fill: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<canvas></canvas>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
+<script>
+
+const pixelRatio = window.devicePixelRatio;
+
+const mainColor = '#536b9d';
+
+const margin = {top: 1, right: 1, bottom: 1, left: 1};
+const fullWidth = 200;
+const fullHeight = fullWidth * (550 / 600);
+const width = fullWidth - margin.left - margin.right;
+const height = fullHeight - margin.top - margin.bottom;
+
+const canvas = d3.select('canvas')
+    .attr('width', fullWidth * pixelRatio)
+    .attr('height', fullHeight * pixelRatio)
+    .style('width', `${fullWidth}px`)
+    .style('height', `${fullHeight}px`);
+
+const context = canvas.node().getContext('2d');
+
+context.scale(pixelRatio, pixelRatio);
+
+const proj4String = '+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +units=m +no_defs';
+
+const proj4Projection = proj4(proj4String);
+
+function degreesToRadians(degrees) { return degrees * Math.PI / 180; }
+function radiansToDegrees(radians) { return radians * 180 / Math.PI; }
+
+const project = function(lambda, phi) {
+    return proj4Projection
+        .forward([lambda, phi].map(radiansToDegrees));
+}
+
+project.invert = function(x, y) {
+    return proj4Projection
+        .inverse([x, y].map(degreesToRadians));
+};
+
+const projection = d3.geoProjection(project);
+
+const path = d3.geoPath(projection)
+    .context(context);
+
+const mapExtent = [
+    [margin.left, margin.top],
+    [width, height],
+];
+
+const opacityScale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([0, 1])
+    .clamp(true);
+
+const fontScale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([4, 12])
+    .clamp(true);
+
+function getGradientPoints() {
+    const x1 = margin.left + (width * 0.1);
+    const y1 = margin.top + (height * 0.2);
+    const x2 = margin.left + (width * 0.2);
+    const y2 = margin.top + (width * 1.0);
+    return [x1, y1, x2, y2];
+}
+
+const [x1, y1, x2, y2] = getGradientPoints();
+const gradient = context.createLinearGradient(x1, y1, x2, y2)
+gradient.addColorStop(0, mainColor);
+gradient.addColorStop(1, '#fff');
+
+function ready(wisconsin) {
+    projection.fitExtent(mapExtent, wisconsin);
+
+    function drawWisconsin() {
+        path(wisconsin);
+        context.globalAlpha = 1;
+        context.fillStyle = gradient;
+        context.fill();
+    }
+    
+    const snowflakeData = d3.range(50)
+        .map(() => {
+            return {
+                x: Math.random() * fullWidth,
+                y: Math.random() * fullHeight,
+                rotation: Math.floor(90 * Math.random()) - 45,
+                depth: Math.random() * 10 + 1,
+            };
+        });
+    
+    function drawSnowflakes(dx, dy) {
+        snowflakeData.forEach((d) => {
+            const fontSize = fontScale(d.depth);
+            const opacity = opacityScale(d.depth);
+            const x = (d.x + dx) % fullWidth;
+            const y = (d.y + dy) % fullHeight;
+            context.globalAlpha = opacity;
+            context.font = `400 ${fontSize}px "Font Awesome 5 Free"`;
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = '#ffffff';
+            context.fillText('\uf2dc', x, y);
+        });
+    }
+    
+    
+    d3.interval((elapsed) => {
+        const dx = elapsed / 200;
+        const dy = elapsed / 100;
+        context.clearRect(0, 0, fullWidth, fullHeight);
+        drawWisconsin();
+        drawSnowflakes(dx, dy); 
+    }, 33);
+}
+
+d3.json('wisconsin.json')
+    .then(ready);
+</script>
+</body>
+</html>

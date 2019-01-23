@@ -15,7 +15,7 @@ header {
 
   h1 {
     font-style: italic;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin-top: 1rem;
     margin-bottom: 0.75rem;
     color: #222;
@@ -32,7 +32,7 @@ header {
 }
 
 section {
-  max-width: 650px;
+  max-width: 700px;
   padding: 20px;
   margin: 0 auto;
   z-index: 0;
@@ -45,6 +45,11 @@ p {
 .graphic {
   margin: 40px auto;
   font-family: 'Unify Sans', sans-serif;
+  
+  .title,
+  .subtitle {
+    padding: 0px 20px;
+  }
 
   .title {
     font-size: 26px;
@@ -98,7 +103,7 @@ select {
   position: relative;
   display: inline-block;
 
-  .title {
+  .select-title {
     position: absolute;
     bottom: 100%;
     margin-bottom: 3px;
@@ -149,7 +154,6 @@ button:hover {
   button:first-child {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
-    border-right: 1px solid hsla(203, 50%, 65%, 0.25);
   }
 
   button:last-child {
@@ -177,4 +181,81 @@ button:hover {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   content: '\f107';
+}
+
+.footnote {
+  font-family: 'Unify Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #666;
+}
+
+a {
+  text-decoration: none;
+  color: #1990e5;
+}
+
+a:visited {
+  color: #4ec4ff;
+}
+
+.byline {
+  font-size: 16px;
+  color: #666;
+}
+
+.social-share {
+  float: right;
+}
+
+.fa-facebook-f {
+  color: #4061ac;
+  margin-right: 7px;
+}
+
+.fa-twitter {
+  color: #00b4ef;
+}
+
+@media (max-width: 767px) {
+  .graphic {
+    .title {
+      font-size: 24px;
+    }
+    .subtitle {
+      font-size: 16px;
+    }
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+
+  select,
+  button {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.35rem;
+  }
+
+  select {
+    padding-right: 1rem;
+  }
+
+  .select-form {
+    .select-title {
+      font-size: 10px;
+    }
+  }
+
+  .select-form::before {
+    font-size: 10px;
+  }
+
+  #history-chart .button-group--explore button[data-id='replay-tour'] {
+    margin-top: 10px;
+  }
+
+  #history-chart .call-to-action-container button {
+    line-height: 1.2;
+  }
 }

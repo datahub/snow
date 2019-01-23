@@ -2,6 +2,56 @@ import * as d3 from 'd3';
 
 import './index.scss';
 
+var BrowserDetect = {
+    init: function () {
+        this.browser = this.searchString(this.dataBrowser) || "Other";
+        this.version = this.searchVersion(navigator.userAgent) || this.searchVersion(navigator.appVersion) || "Unknown";
+    },
+    searchString: function (data) {
+        for (var i = 0; i < data.length; i++) {
+            var dataString = data[i].string;
+            this.versionSearchString = data[i].subString;
+
+            if (dataString.indexOf(data[i].subString) !== -1) {
+                return data[i].identity;
+            }
+        }
+    },
+    searchVersion: function (dataString) {
+        var index = dataString.indexOf(this.versionSearchString);
+        if (index === -1) {
+            return;
+        }
+
+        var rv = dataString.indexOf("rv:");
+        if (this.versionSearchString === "Trident" && rv !== -1) {
+            return parseFloat(dataString.substring(rv + 3));
+        } else {
+            return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+        }
+    },
+
+    dataBrowser: [
+        {string: navigator.userAgent, subString: "Edge", identity: "MS Edge"},
+        {string: navigator.userAgent, subString: "MSIE", identity: "Explorer"},
+        {string: navigator.userAgent, subString: "Trident", identity: "Explorer"},
+        {string: navigator.userAgent, subString: "Firefox", identity: "Firefox"},
+        {string: navigator.userAgent, subString: "Opera", identity: "Opera"},  
+        {string: navigator.userAgent, subString: "OPR", identity: "Opera"},  
+
+        {string: navigator.userAgent, subString: "Chrome", identity: "Chrome"}, 
+        {string: navigator.userAgent, subString: "Safari", identity: "Safari"}       
+    ]
+};
+
+BrowserDetect.init();
+const browser = BrowserDetect.browser;
+
+const mobileWidth = 767;
+let windowWidth = 320;
+
+let introAnimationTimer = {};
+
 const viewsData = [
     {
         label: 'All',
@@ -61,6 +111,7 @@ const formatMonth = (date) => {
     const month = date.getMonth();
     const abbreviatedMonths = [0, 1, 7, 8, 9, 10, 11];
     const isAbbreviated = abbreviatedMonths.indexOf(month) > -1;
+    if (windowWidth <= mobileWidth) return `${d3.timeFormat('%b')(date)}.`;
     if (isAbbreviated) return `${d3.timeFormat('%b')(date)}.`;
     return d3.timeFormat('%B')(date);
 };
@@ -79,13 +130,16 @@ let defaultYear = '2018';
 const years = d3.range(1940, 2019).map(d => d.toString());
 
 const margin = {top: 30, right: 40, bottom: 30, left: 50};
-const fullWidth = 800;
-const fullHeight = 500;
-const width = fullWidth - margin.left - margin.right;
-const height = fullHeight - margin.top - margin.bottom;
+let fullWidth = windowWidth;
+let fullHeight = 450;
+let width = fullWidth - margin.left - margin.right;
+let height = fullHeight - margin.top - margin.bottom;
 
 const container = d3.select('#history-chart')
-    .style('max-width', `${width}px`);
+    .style('max-width', `${fullWidth}px`);
+
+
+container.classed('MSIE', ['Explorer', 'MS Edge'].indexOf(browser) > -1);
 
 const layers = container.select('.layers')
     .style('width', `${fullWidth}px`)
@@ -245,55 +299,108 @@ function getAverageSeason(data) {
 }
 
 function ready(data) {
+    fullWidth = windowWidth >= 800 ? 800 : windowWidth;
+    width = fullWidth - margin.left - margin.right;
+    height = fullHeight - margin.top - margin.bottom;
+
+    container
+        .style('max-width', `${fullWidth}px`);
+
+    layers
+        .style('width', `${fullWidth}px`)
+        .style('height', `${fullHeight}px`);
+
+    svg
+        .attr('width', fullWidth)
+        .attr('height', fullHeight);
+
+    hoverRect
+        .attr('width', fullWidth)
+        .attr('height', fullHeight)
+
+    sequence
+        .style('width', `${width}px`)
+        .style('height', `${height}px`);
+
     data = data
         .filter(d => (+d.season) >= 1940);
 
     data = data.concat(getAverageSeason(data));    
 
-    xScale.domain([new Date(2001, 9, 1), new Date(2002, 3, 30)]);
-    yScale.domain([0, d3.max(data, yAccessor)]);
+    xScale
+        .domain([new Date(2001, 9, 1), new Date(2002, 3, 30)])
+        .range([0, width]);
+
+    yScale
+        .domain([0, d3.max(data, yAccessor)]);
 
     const bySeason = d3.nest()
         .key(d => d.season)
         .entries(data);
 
-    const seasons = g.append('g').attr('class', 'seasons');
+    const seasons = g.selectAll('.seasons').data([1]);
 
-    const season = seasons.selectAll('.season').data(bySeason)
-        .enter().append('g')
-            .attr('class', d => `season season--${d.key}`);
-        
-    season.append('path')
+    seasons.exit().remove();
+
+    const seasonsEnter = seasons.enter().append('g')
+        .attr('class', 'seasons');
+
+    const seasonsUpdate = seasonsEnter.merge(seasons); 
+
+    const season = seasonsUpdate.selectAll('.season').data(bySeason);
+
+    season.exit().remove();
+
+    const seasonEnter = season.enter().append('g')
+        .attr('class', d => `season season--${d.key}`);
+    
+    const seasonUpdate = seasonEnter.merge(season);
+
+    seasonEnter.append('path');
+
+    seasonUpdate.select('path')
         .datum(d => d.values)
         .attr('d', drawLine);
     
-    season.append('circle')
-        .datum(d => d.values.slice(-1)[0])
-        .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`)
+    seasonEnter.append('circle')
         .attr('r', 4);
+
+    seasonUpdate.select('circle')
+        .datum(d => d.values.slice(-1)[0])
+        .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`);
     
-    season.append('text')
+    seasonEnter.append('text')
+        .attr('dy', '-0.67em');
+
+    seasonUpdate.select('text')
         .datum(d => d.values.slice(-1)[0])
         .attr('transform', d => `translate(${xValue(d)}, ${yValue(d)})`)
         .attr('text-anchor', (d) => {
             if (d.season === 'average') return 'end';
             return 'middle';
         })
-        .attr('dy', '-0.67em')
         .html((d) => {
             if (d.season === 'average') return 'Avg. 1940-2018';
             const y0 = +d.season;
             const y1 = (y0 + 1).toString().slice(-2);
             return `${y0}&ndash;${y1}`;
         });
+    
+    const gXAxis = g.selectAll('.axis--x').data([1]);
+    
+    const gXAxisEnter = gXAxis.enter().append('g')
+        .attr('class', 'axis axis--x');
 
-    g.append('g')
-        .attr('class', 'axis axis--x')
+    const gXAxisUpdate = gXAxisEnter.merge(gXAxis)
         .attr('transform', `translate(0, ${height})`)
         .call(xAxis);
     
-    g.append('g')
+    const gYAxis = g.selectAll('.axis--y').data([1])
+    
+    const gYAxisEnter = gYAxis.enter().append('g')
         .attr('class', 'axis axis--y')
+    
+    const gYAxisUpdate = gYAxisEnter.merge(gYAxis)
         .call(yAxis);
 
     annotation
@@ -301,25 +408,25 @@ function ready(data) {
         .style('top', d => `${yValue(d)}px`);
 
     function activate(year) {
-        season.classed('active', false);
-        season
+        seasonUpdate.classed('active', false);
+        seasonUpdate
             .filter(d => d.key === year)
             .classed('active', true)
             .raise();
     }
 
     function highlight(year) {
-        season.classed('highlight', false);
-        season
+        seasonUpdate.classed('highlight', false);
+        seasonUpdate
             .filter(d => d.key === year)
             .classed('highlight', true)
             .raise();
     }
 
     function animate(year) {
-        season
+        seasonUpdate
             .classed('animate', false);
-        season
+        seasonUpdate
             .filter(d => d.key === year)
             .classed('animate', true)
             .raise();
@@ -327,12 +434,12 @@ function ready(data) {
 
     function backgroundify(years) {
         if (years[0] === 'none') {
-            season.classed('backgroundified', false);
+            seasonUpdate.classed('backgroundified', false);
         } else if (years[0] === 'all') {
-            season.classed('backgroundified', true);
+            seasonUpdate.classed('backgroundified', true);
         } else {
-            season.classed('backgroundified', false);
-            season
+            seasonUpdate.classed('backgroundified', false);
+            seasonUpdate
                 .filter(d => years.indexOf(d.key) > -1)
                 .classed('backgroundified', true)
                 .raise();
@@ -346,8 +453,6 @@ function ready(data) {
         animate(year);
         highlight(year);
     }
-
-    let introAnimationTimer;
 
     function startIntroAnimation() {
         animateRandom();
@@ -381,11 +486,14 @@ function ready(data) {
         return y1 - y0;
     });
 
-    const optionSeason = selectBoxSeason.selectAll('option').data(seasonOptions)
-        .enter().append('option')
-            .attr('selected', d => d.selected ? 'selected' : null)
-            .attr('value', d => d.value)
-            .text(d => d.text);
+    const optionSeason = selectBoxSeason.selectAll('option').data(seasonOptions);
+
+    const optionSeasonEnter = optionSeason.enter().append('option');
+
+    const optionSeasonUpdate = optionSeasonEnter.merge(optionSeason)
+        .attr('selected', d => d.selected ? 'selected' : null)
+        .attr('value', d => d.value)
+        .text(d => d.text);
 
     function changeSeason(d) {
         const i = selectBoxSeason.node().selectedIndex;
@@ -407,11 +515,14 @@ function ready(data) {
             };
         });
 
-    const optionView = selectBoxView.selectAll('option').data(viewOptions)
-        .enter().append('option')
-            .attr('selected', d => d.selected ? 'selected' : null)
-            .attr('value', d => d.value)
-            .text(d => d.text);
+    const optionView = selectBoxView.selectAll('option').data(viewOptions);
+
+    const optionViewEnter = optionView.enter().append('option');
+
+    const optionViewUpdate = optionViewEnter.merge(optionView)
+        .attr('selected', d => d.selected ? 'selected' : null)
+        .attr('value', d => d.value)
+        .text(d => d.text);
 
     function changeView() {
         const i = selectBoxView.node().selectedIndex;
@@ -458,6 +569,10 @@ function ready(data) {
 
     function mouseleave() {
         highlight(defaultYear);
+    }
+
+    function nothing() {
+        console.log(d3.event);
     }
 
     hoverRect
@@ -523,6 +638,8 @@ function ready(data) {
     }
 
     function updateScene(sceneId) {
+        stopIntroAnimation();
+        
         scene.classed('inactive', ({id}) => id !== sceneId);
         sceneButton.classed('inactive', ({id}) => id !== sceneId);    
         const {
@@ -540,9 +657,12 @@ function ready(data) {
     buttonReplayTour.on('click', takeTour);
 }
 
-function init() {
+const init = (w) => {
+    if (introAnimationTimer.stop !== undefined) introAnimationTimer.stop();
+    windowWidth = w;
     d3.csv('./static/mke-snow-accumulation.csv', row)
         .then(ready);
-}
+};
 
 export default init;
+

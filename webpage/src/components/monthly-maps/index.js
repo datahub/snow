@@ -1,12 +1,13 @@
 import './index.scss';
 
+let windowWidth = 320;
 
 const imageWidth = 501;
 const imageHeight = 516;
 const aspectRatio = imageWidth / imageHeight;
 
 const formatMonth = (monthIndex) => {
-    const date = new Date(2018, monthIndex, 1);
+    const date = new Date(2018, monthIndex - 1, 1);
     const month = date.getMonth();
     const abbreviatedMonths = [0, 1, 7, 8, 9, 10, 11];
     const isAbbreviated = abbreviatedMonths.indexOf(month) > -1;
@@ -14,11 +15,11 @@ const formatMonth = (monthIndex) => {
     return d3.timeFormat('%B')(date);
 };
 
-const margin = {top: 30, right: 10, bottom: 10, left: 60};
-const fullWidth = 700;
-const fullHeight = fullWidth * (550 / 600);
-const width = fullWidth - margin.left - margin.right;
-const height = fullHeight - margin.top - margin.bottom;
+const margin = {top: 30, right: 10, bottom: 10, left: 75};
+let fullWidth = windowWidth;
+let fullHeight = fullWidth * (550 / 600);
+let width = fullWidth - margin.left - margin.right;
+let height = fullHeight - margin.top - margin.bottom;
 
 const proj4String = '+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +units=m +no_defs';
 
@@ -41,7 +42,7 @@ const projection = d3.geoProjection(project);
 
 const path = d3.geoPath(projection);
 
-const years = d3.range(2013, 2018).reverse();
+const years = d3.range(2013, 2019).reverse();
 const months = [11, 12, 1, 2, 3, 4];
 
 const xScale = d3.scaleBand()
@@ -55,15 +56,21 @@ const yScale = d3.scaleBand()
     .domain(years)
     .range([height, 0]);
 
-const mapWidth = xScale.bandwidth();
-const mapHeight = mapWidth * aspectRatio;
-const mapPadding = [0, (yScale.bandwidth() - mapHeight) / 2];
-const mapExtent = [
+let mapWidth = xScale.bandwidth();
+let mapHeight = mapWidth * aspectRatio;
+let mapPadding = [0, (yScale.bandwidth() - mapHeight) / 2];
+let mapExtent = [
     [mapPadding[0], mapPadding[1]],
     [mapWidth - mapPadding[0], mapHeight + mapPadding[1]],
 ];
 
-const yAxis = d3.axisLeft(yScale);
+function formatYAxis(y0) {
+    const y1 = (y0 + 1).toString().slice(-2);
+    return `${y0}-${y1}`;
+}
+
+const yAxis = d3.axisLeft(yScale)
+    .tickFormat(formatYAxis);
 
 const container = d3.select('#monthly-maps')
     .style('max-width', `${fullWidth}px`);
@@ -85,60 +92,120 @@ const clipPath = defs.append('clipPath')
 const g = svg.append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+const gXAxis = g.append('g').attr('class', 'axis axis--x');
+const gYAxis = g.append('g').attr('class', 'axis axis--y');
+
 const data = years
     .map((year) => {
         const values = months
             .map((month) => {
                 if (month < 5) return {year: year + 1, month};
                 return {year, month};
+            })
+            .filter((d) => {
+                if (year === 2018) return (d.month > 9 || d.month < 2);
+                return true;
             });
         return {year, values};
     });
 
 function ready(wisconsin) {
+    fullWidth = windowWidth >= 700 ? 700 : windowWidth;
+    fullHeight = fullWidth * (650 / 600);
+    width = fullWidth - margin.left - margin.right;
+    height = fullHeight - margin.top - margin.bottom;
+
+    xScale
+        .range([0, width]);
+
+    yScale
+        .range([height, 0]);
+
+    mapWidth = xScale.bandwidth();
+    mapHeight = mapWidth * aspectRatio;
+    mapPadding = [0, (yScale.bandwidth() - mapHeight) / 2];
+    mapExtent = [
+        [mapPadding[0], mapPadding[1]],
+        [mapWidth - mapPadding[0], mapHeight + mapPadding[1]],
+    ];
+
+    container.style('max-width', `${fullWidth}px`);
+
+    annotations
+        .style('width', `${width + margin.left + margin.right}px`)
+        .style('height', `${height + margin.top + margin.bottom}px`);
+
+    svg
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom);
+        
     projection.fitExtent(mapExtent, wisconsin);
 
-    const season = g.selectAll('.season').data(data)
-        .enter().append('g')
-            .attr('class', d => `season season--${d.year}-${d.year + 1}`)
+    const season = g.selectAll('.season').data(data);
+
+    const seasonEnter = season.enter().append('g')
+        .attr('class', d => `season season--${d.year}-${d.year + 1}`);
+
+    const seasonUpdate = seasonEnter.merge(season)
             .attr('transform', d => `translate(0, ${yScale(d.year)})`);
     
-    const month = season.selectAll('.month').data(d => d.values)
-        .enter().append('g')
-            .attr('class', d => `month month--${d.month}`)
-            .attr('transform', d => `translate(${xScale(d.month)}, 0)`);
+    const month = seasonUpdate.selectAll('.month').data(d => d.values);
+
+    const monthEnter = month.enter().append('g')
+            .attr('class', d => `month month--${d.month}`);
+    
+    const monthUpdate = monthEnter.merge(month)
+        .attr('transform', d => `translate(${xScale(d.month)}, 0)`);
         
-    month.append('image')
+    monthEnter.filter(d => d.year === 2019 && d.month === 1)
+        .append('rect')
+        .attr('class', 'incomplete-month-background');
+    
+    monthEnter.append('image')
         .attr('xlink:href', (d) => {
             const pad = d3.format('0>2');
             return `./static/monthly-maps/wi-snow-colored-${d.year}-${pad(d.month)}.png`;
         })
-        .attr('width', xScale.bandwidth())
-        .attr('height', yScale.bandwidth())
         .attr('clip-path', 'url(#wisconsin-border-monthly)');
 
-    month.append('path')
+    monthUpdate.select('image')
+        .attr('width', xScale.bandwidth())
+        .attr('height', yScale.bandwidth());
+
+    monthEnter.append('path')
+        .attr('class', 'border border--wisconsin');
+
+    monthUpdate.select('path')
         .datum(wisconsin)
-        .attr('class', 'border border--wisconsin')
         .attr('d', path);
 
+    monthUpdate.select('.incomplete-month-background')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('rx', 5)
+        .attr('ry', 5)
+        .attr('width', xScale.bandwidth())
+        .attr('height', yScale.bandwidth());
+    
     clipPath.datum(wisconsin)
         .attr('d', path);
     
-    g.append('g').attr('class', 'axis axis--x')
-        .call(xAxis);
+    gXAxis.call(xAxis);
     
-    g.append('g').attr('class', 'axis axis--y')
-        .call(yAxis);
+    gYAxis.call(yAxis);
 
     const annotationData = [];
     
-    const annotation = annotations.selectAll('.annotation').data(annotationData)
-        .enter().append('div')
-            .attr('class', 'annotation');
+    const annotation = annotations.selectAll('.annotation').data(annotationData);
+
+    const annotationEnter = annotation.enter().append('div')
+        .attr('class', 'annotation');
+    
+    const annotationUpdate = annotationEnter.merge(annotation);
 }
 
-function init() {
+function init(w) {
+    windowWidth = w;
     d3.json('static/wisconsin.json')
         .then(ready);
 }

@@ -1,0 +1,149 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<style>
+
+.snowflake {
+    font-family: 'Font Awesome 5 Free';
+    font-size: 12px;
+    font-weight: 400;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    fill: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<svg></svg>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
+<script>
+
+const mainColor = '#536b9d';
+
+const margin = {top: 1, right: 1, bottom: 1, left: 1};
+const fullWidth = 200;
+const fullHeight = fullWidth * (550 / 600);
+const width = fullWidth - margin.left - margin.right;
+const height = fullHeight - margin.top - margin.bottom;
+
+const proj4String = '+proj=tmerc +lat_0=0 +lon_0=-90 +k=0.9996 +x_0=520000 +y_0=-4480000 +ellps=GRS80 +units=m +no_defs';
+
+const proj4Projection = proj4(proj4String);
+
+function degreesToRadians(degrees) { return degrees * Math.PI / 180; }
+function radiansToDegrees(radians) { return radians * 180 / Math.PI; }
+
+const project = function(lambda, phi) {
+    return proj4Projection
+        .forward([lambda, phi].map(radiansToDegrees));
+}
+
+project.invert = function(x, y) {
+    return proj4Projection
+        .inverse([x, y].map(degreesToRadians));
+};
+
+const projection = d3.geoProjection(project);
+
+const path = d3.geoPath(projection);
+
+const mapExtent = [
+    [margin.left, margin.top],
+    [width, height],
+];
+
+const opacityScale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([0, 1])
+    .clamp(true);
+
+const fontScale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([4, 12])
+    .clamp(true);
+
+const svg = d3.select('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom);
+
+const defs = svg.append('defs');
+
+const backgroundGradient = defs.append('linearGradient')
+    .attr('id', 'background-gradient')
+    .attr('x1', '0%')
+    .attr('x2', '10%')
+    .attr('y1', '20%')
+    .attr('y2', '100%');
+
+backgroundGradient.append('stop')
+    .attr('offset', '0%')
+    .style('stop-color', mainColor)
+    .style('stop-opacity', 0.75);
+
+backgroundGradient.append('stop')
+    .attr('offset', '100%')
+    .style('stop-color', mainColor)
+    .style('stop-opacity', 0.1);
+
+const clipPath = defs.append('clipPath')
+    .attr('id', 'wisconsin-border')
+    .append('path');
+
+const g = svg.append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+function ready(wisconsin) {
+    projection.fitExtent(mapExtent, wisconsin);
+
+    g.append('g').attr('class', 'border')
+        .datum(wisconsin)
+        .append('path')
+        .attr('fill', 'url(#background-gradient)')
+        .attr('d', path);
+    
+    const snowflakeData = d3.range(50)
+        .map(() => {
+            return {
+                x: Math.random() * fullWidth,
+                y: Math.random() * fullHeight,
+                rotation: Math.floor(90 * Math.random()) - 45,
+                depth: Math.random() * 10 + 1,
+            };
+        });
+    
+    const snowflakes = g.append('g').attr('class', 'snowflakes');
+
+    const snowflake = snowflakes.selectAll('.snowflake').data(snowflakeData)
+        .enter().append('text')
+            .attr('class', 'snowflake')
+            .attr('transform', d => `rotate(${d.rotation})`)
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
+            .style('opacity', d => opacityScale(d.depth))
+            .style('font-size', d => fontScale(d.depth))
+            .style('font-weight', 400)
+            .text('\uf2dc');
+    
+    d3.timer((elapsed) => {
+        const dx = elapsed / 200;
+        const dy = elapsed / 100;
+        snowflake
+            .attr('x', d => (d.x + dx) % fullWidth)
+            .attr('y', d => (d.y + dy) % fullHeight);
+    });
+}
+
+d3.json('wisconsin.json')
+    .then(ready);
+</script>
+</body>
+</html>

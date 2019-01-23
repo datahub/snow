@@ -1,6 +1,9 @@
 #monthly-maps {
     .legend {
         text-align: center;
+        img {
+            max-width: 100%;
+        }
     }
     
     .axis .domain {
@@ -17,10 +20,14 @@
         font-family: 'Unify Sans', sans-serif;
     }
 
+    .axis--y .tick text {
+        font-size: 14px;
+    }
+
     .border {
         fill: none;
-        stroke: #ccc;
-        border-width: 0.5px;
+        stroke: #666;
+        stroke-width: 0.5px;
     }
 
     .layers {
@@ -31,5 +38,27 @@
         position: absolute;
         left: 0;
         top: 0;
+    }
+
+    .incomplete-month-background {
+        fill: lightgoldenrodyellow;
+    }
+
+    .incomplete-month-footnote {
+        .box {
+            display: inline-block;
+            background-color: lightgoldenrodyellow;
+            width: 15px;
+            height: 15px;
+            border: 1px solid #d9d926;
+            border-radius: 5px;
+            position: relative;
+            top: 3px;
+            margin-right: 3px;
+        }
+        font-family: 'Unify sans', sans-serif;
+        font-size: 16px;
+        color: #666;
+        text-align: center;
     }
 }

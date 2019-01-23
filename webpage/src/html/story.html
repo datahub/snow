@@ -1,18 +1,24 @@
 <div id="story">
     <section>
         <header>
-            <h1>This year of snow in Wisconsin</h1>
-            <h3>How does this year's snowfall compare to past winters?</h3>
+            <h1>How this Wisconsin winter compares to past seasons' snowfalls</h1>
+            <div class="social-share">
+                    <a target="blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A//projects.jsonline.com/apps/snow/index.html">
+                        <i class="fab fa-facebook-f fa-lg"></i>
+                    </a>
+                    <a target="blank" href="https://twitter.com/home?status=The%20history%20of%20Milwaukee%20snowfall,%201940-now.%0A%0ACompare%20Wisconsin%E2%80%99s%20current%20snowfall%20to%20past%20winters%20with%20an%20interactive%20graphic.%0A%0Ahttps%3A//projects.jsonline.com/apps/snow/index.html">
+                        <i class="fab fa-twitter fa-lg"></i>
+                    </a>
+            </div>
+            <div class="byline">By Andrew Mollica and Meg Jones</div>
         </header>
-        <p>Spicy jalapeno bacon ipsum dolor amet beef turducken shankle, strip steak pork belly kielbasa ham hock porchetta filet mignon landjaeger burgdoggen swine. Hamburger drumstick jerky, strip steak brisket salami pastrami t-bone chuck venison rump prosciutto picanha tenderloin. Brisket flank ham tenderloin bresaola bacon pig burgdoggen, turkey meatball meatloaf frankfurter tri-tip. Pastrami chicken picanha doner, ham hock swine ball tip ribeye pork belly bacon cow strip steak andouille.</p>
-        <p>Beef ribs picanha swine burgdoggen meatball. Kielbasa pancetta tail, sausage tongue fatback turkey jerky pig alcatra short loin pastrami cow. Bresaola frankfurter kielbasa porchetta shank, short loin hamburger. Chicken pastrami filet mignon, beef ribs pork belly tenderloin shoulder pork chop meatball strip steak pancetta rump drumstick.</p>
+        <p>Anyone who has lived through winter in Wisconsin knows the snow spigot varies from a gush to a trickle. Sometimes snow piles up and doesn’t finally disappear until, like, June. And some years it seems that snow blowers and shovels hardly get a workout. </p>
+        <p>For Wisconsinites, especially natives or those who have spent many years here, storms sometimes blend and blur as memories get hazy. Was the pow-brrr-pow-brrr-pow of alternating snow storms and subzero temperatures in January 1979 worse than 1982’s early-January blizzard that dumped 16 inches within a few hours? Does everyone who survived the 1947 blizzard that basically paralyzed Milwaukee for weeks — with 18 inches of snow, 60 mph winds and 10-foot drifts — have bragging rights over the folks who lived through the blizzard of February 2008?</p>
+        <p>Below, take a tour of notable Milwaukee winters and explore the snowiest — and least-snowy — years since 1940.</p>
     </section>
     <div class="graphic" id="history-chart">
         <div class="title">
-            The history of snowfall in Milwaukee
-        </div>
-        <div class="subtitle">
-            Snow accumulation for every winter season in Milwaukee since 1940
+            Explore the history of snowfall in Milwaukee, 1940-present
         </div>
         <div class="layers">
             <svg class="layer layer--svg"></svg>
@@ -31,12 +37,12 @@
 
                 <div class="button-group button-group--explore">
                     <form class="select-form">
-                        <div class="title">Change season</div>
+                        <div class="select-title">Change season</div>
                         <select name="season-selector" id="season-selector"></select>
                     </form>
                     
                     <form class="select-form">
-                        <div class="title">Change view</div>
+                        <div class="select-title">Change view</div>
                         <select name="view-selector" id="view-selector"></select>
                     </form>
 
@@ -60,8 +66,9 @@
                         <div class="scene inactive delay-1000" data-season="2007" data-id="1">
                             <div class="annotation annotation--boxed"
                                 data-date="2008-10-10"
-                                data-accumulation="95"
-                                data-anchor="top-left"
+                                data-accumulation="40"
+                                data-anchor="bottom-left"
+                                data-anchor-mobile="top-left"
                                 style="width: 300px;">
                                 This is the winter of 2007&ndash;08, the snowiest winter in Milwaukee since 1940. About 100 inches of snow fell that season.
                             </div>
@@ -71,14 +78,14 @@
                                 data-anchor="left-middle"
                                 style="max-width: 180px;">
                                 <i class="fas fa-long-arrow-alt-left"></i>
-                                <b>Feb. 6th, 2008</b><br/>Blizzard dumps nearly a foot of snow.
+                                <span class="mobile-hidden"><b>Feb. 6th, 2008</b><br/></span>Blizzard dumps nearly a foot of snow.
                             </div>
                             <div class="annotation"
                                 data-date="2008-03-19"
                                 data-accumulation="93"
                                 data-anchor="right-middle"
-                                style="width: 200px;">
-                                <b>March 21st, 2008</b><br/>More than 11 inches of snow falls on Milwaukee.
+                                style="width: 150px;">
+                                <span class="mobile-hidden"><b>March 21st, 2008</b><br/></span>More than 11 inches of snow falls on Milwaukee.
                                 <i class="fas fa-long-arrow-alt-right"></i> 
                             </div>
                         </div>
@@ -86,7 +93,7 @@
                             <div class="annotation annotation--boxed"
                                 data-date="1968-04-30"
                                 data-accumulation="30"
-                                data-anchor="bottom-left"
+                                data-anchor="bottom-right"
                                 style="width: 300px;">
                                 Here's 1967&ndash;68, the least snowy winter since 1940. Only about a foot of snow fell all winter long.
                             </div>
@@ -97,7 +104,7 @@
                                 data-accumulation="95"
                                 data-anchor="top-left"
                                 style="width: 300px;">
-                                An average winter in Milwaukee sees about 48 inches of snow accumulation.
+                                An average winter in Milwaukee sees almost 50 inches of snow accumulation.
                             </div>
                         </div>
                         <div class="scene inactive delay-500" data-season="2018" data-background-seasons="1967,2007,average" data-id="4">
@@ -124,15 +131,13 @@
         </div>
     </div>
     <section>
-        <p>Boudin pork loin pastrami shank sausage hamburger chicken turkey shankle. Leberkas jowl ham hock frankfurter kielbasa. Turducken ribeye biltong, hamburger prosciutto andouille chicken. Pork cow andouille brisket. Shank bresaola beef ribs, chuck filet mignon rump hamburger chicken landjaeger boudin pastrami salami sirloin andouille fatback. Sausage buffalo tail picanha jowl.</p>
-        <p>Drumstick tongue rump buffalo spare ribs meatloaf. Meatloaf pig short ribs filet mignon shankle pastrami. Shankle tongue pork loin spare ribs sirloin prosciutto andouille cow pork chop short ribs. Ribeye tenderloin beef ribs pork belly salami ball tip pork boudin drumstick meatloaf. Leberkas boudin frankfurter tongue buffalo pork loin.</p>
     </section>
     <div class="graphic" id="monthly-maps">
         <div class="title">
-            Snowfall across Wisconsin
+            Wisconsin snow: Where and when it falls
         </div>
         <div class="subtitle">
-            Total estimated snow accumulation for wintery months since 2013.
+            Where in Wisconsin gets the most snow — and when does it fall? These maps show the month-by-month snowfall across the state since 2013.
         </div>
         <div class="layers">
             <svg></svg>
@@ -142,5 +147,18 @@
         <div class="legend">
             <img src="static/legends/monthly-maps/legend.png" srcset="static/legends/monthly-maps/legend.png 1x, static/legends/monthly-maps/legend@2x.png 2x, static/legends/monthly-maps/legend@3x.png 3x, static/legends/monthly-maps/legend@4x.png 4x" alt="Legend: darker colors indicate more snow.">
         </div>
+
+        <div class="incomplete-month-footnote">
+            <span class="box"></span>
+            Incomplete month
+        </div>
     </div>
+
+    <section>
+        <p class="footnote">
+            Source: National Oceanic and Atmospheric Administration (NOAA). Recent data
+            for Milwaukee snowfall comes from Accuweather because NOAA's webpage hosting
+            the data is temporarily unavailable because of the goverment shutdown.
+        </p>
+    </section>
 </div>
