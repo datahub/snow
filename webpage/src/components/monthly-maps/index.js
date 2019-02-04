@@ -103,7 +103,7 @@ const data = years
                 return {year, month};
             })
             .filter((d) => {
-                if (year === 2018) return (d.month > 9 || d.month < 2);
+                if (year === 2018) return (d.month > 9 || d.month < 3);
                 return true;
             });
         return {year, values};
@@ -157,7 +157,7 @@ function ready(wisconsin) {
     const monthUpdate = monthEnter.merge(month)
         .attr('transform', d => `translate(${xScale(d.month)}, 0)`);
         
-    monthEnter.filter(d => d.year === 2019 && d.month === 1)
+    monthEnter.filter(d => d.year === 2019 && d.month === 2)
         .append('rect')
         .attr('class', 'incomplete-month-background');
     
