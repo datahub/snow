@@ -1,5 +1,7 @@
 import './index.scss';
 
+const currentMonth = 3;
+
 let windowWidth = 320;
 
 const imageWidth = 501;
@@ -103,7 +105,7 @@ const data = years
                 return {year, month};
             })
             .filter((d) => {
-                if (year === 2018) return (d.month > 9 || d.month < 3);
+                if (year === 2018) return (d.month > 9 || d.month <= currentMonth);
                 return true;
             });
         return {year, values};
@@ -157,7 +159,7 @@ function ready(wisconsin) {
     const monthUpdate = monthEnter.merge(month)
         .attr('transform', d => `translate(${xScale(d.month)}, 0)`);
         
-    monthEnter.filter(d => d.year === 2019 && d.month === 2)
+    monthEnter.filter(d => d.year === 2019 && d.month === currentMonth)
         .append('rect')
         .attr('class', 'incomplete-month-background');
     
