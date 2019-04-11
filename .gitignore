@@ -1,2 +1,7 @@
 node_modules
 .DS_Store
+data/national-snowfall-analysis/daily-files
+data/national-snowfall-analysis/geojson
+data/national-snowfall-analysis/tif
+data/national-snowfall-analysis/zip
+data/national-snowfall-analysis/png

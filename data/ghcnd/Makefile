@@ -1,29 +1,44 @@
+SHELL := /bin/bash
+
+PYTHON := /code/snow/venv/bin/python
 
 GENERATED_FILES = \
-	txt/ghcnd-stations.txt \
-	csv/snow-accumulation.csv
+	data/mke-snow-accumulation.csv
 
-all: $(GENERATED_FILES)
+update: destroy build upload cache-bust
+
+destroy:
+	rm -f data/dly/USW00014839.dly
+
+build:
+	. /code/snow/venv/bin/activate; $(MAKE) $(GENERATED_FILES)
+
+upload:
+	aws s3 cp data/mke-snow-accumulation.csv s3://projects.jsonline.com/apps/snow/static/
+
+cache-bust:
+	aws cloudfront create-invalidation --distribution-id E3H0OA9T40SSTC --paths /apps/snow/static/$(notdir $(GENERATED_FILES))
 
 # Search txt/ghcnd-stations.txt to find...
 # USW00014839 = Milwaukee Mitchell Airport weather station
 # USW00014922 = Minneapolis Airport
 # etc...
-txt/ghcnd-stations.txt:
+data/ghcnd-stations.txt:
 	mkdir -p $(dir $@)
 	curl -o $@.download 'https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt'
 	mv $@.download $@
 
-dly/%.dly:
+data/dly/%.dly:
 	mkdir -p $(dir $@)
 	curl -o $@.download 'https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/all/$(notdir $@)'
 	mv $@.download $@
 
-csv/mke-weather.csv: dly/USW00014839.dly
+data/mke-weather.csv: data/dly/USW00014839.dly
 	mkdir -p $(dir $@)
-	node bin/parse-ghcnd.js -i $< -o $@
+	$(PYTHON) parse-ghcnd.py < $< > $@
 
-csv/snow-accumulation.csv: csv/mke-weather.csv
+data/mke-snow-accumulation.csv: data/mke-weather.csv
 	mkdir -p $(dir $@)
-	python bin/get-snow-accumulation.py < $< > $@
+	$(PYTHON) get-snow-accumulation.py < $< > $@
 
+.PHONY: destroy build upload update cache-bust
