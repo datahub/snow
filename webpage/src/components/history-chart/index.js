@@ -67,7 +67,7 @@ const viewsData = [
     },
     {
         label: '2010s',
-        seasons: d3.range(2010, 2019).map(d => d.toString()),
+        seasons: d3.range(2010, 2020).map(d => d.toString()),
     },
     {
         label: '2000s',
@@ -126,8 +126,8 @@ const parseMonthDay = (d) => {
     return date;
 };
 
-let defaultYear = '2018';
-const years = d3.range(1940, 2019).map(d => d.toString());
+let defaultYear = '2019';
+const years = d3.range(1940, 2020).map(d => d.toString());
 
 const margin = {top: 30, right: 40, bottom: 30, left: 50};
 let fullWidth = windowWidth;
