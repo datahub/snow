@@ -1,6 +1,6 @@
 import './index.scss';
 
-const currentMonth = 11;
+const currentMonth = 12;
 
 let windowWidth = 320;
 

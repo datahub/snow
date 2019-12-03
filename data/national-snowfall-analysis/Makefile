@@ -1,80 +1,98 @@
 SHELL := /bin/bash
 
 GENERATED_FILES := \
+	tif/wi-snow-2013-10.tif \
 	tif/wi-snow-2013-11.tif \
 	tif/wi-snow-2013-12.tif \
 	tif/wi-snow-2014-01.tif \
 	tif/wi-snow-2014-02.tif \
 	tif/wi-snow-2014-03.tif \
 	tif/wi-snow-2014-04.tif \
+	tif/wi-snow-2014-10.tif \
 	tif/wi-snow-2014-11.tif \
 	tif/wi-snow-2014-12.tif \
 	tif/wi-snow-2015-01.tif \
 	tif/wi-snow-2015-02.tif \
 	tif/wi-snow-2015-03.tif \
 	tif/wi-snow-2015-04.tif \
+	tif/wi-snow-2015-10.tif \
 	tif/wi-snow-2015-11.tif \
 	tif/wi-snow-2015-12.tif \
 	tif/wi-snow-2016-01.tif \
 	tif/wi-snow-2016-02.tif \
 	tif/wi-snow-2016-03.tif \
 	tif/wi-snow-2016-04.tif \
+	tif/wi-snow-2016-10.tif \
 	tif/wi-snow-2016-11.tif \
 	tif/wi-snow-2016-12.tif \
 	tif/wi-snow-2017-01.tif \
 	tif/wi-snow-2017-02.tif \
 	tif/wi-snow-2017-03.tif \
 	tif/wi-snow-2017-04.tif \
+	tif/wi-snow-2017-10.tif \
 	tif/wi-snow-2017-11.tif \
 	tif/wi-snow-2017-12.tif \
 	tif/wi-snow-2018-01.tif \
 	tif/wi-snow-2018-02.tif \
 	tif/wi-snow-2018-03.tif \
 	tif/wi-snow-2018-04.tif \
+	tif/wi-snow-2018-10.tif \
 	tif/wi-snow-2018-11.tif \
 	tif/wi-snow-2018-12.tif \
 	tif/wi-snow-2019-01.tif \
 	tif/wi-snow-2019-02.tif \
 	tif/wi-snow-2019-03.tif \
+	tif/wi-snow-2019-04.tif \
+	tif/wi-snow-2019-10.tif \
+	tif/wi-snow-2019-11.tif \
+	png/wi-snow-colored-2013-10.png \
 	png/wi-snow-colored-2013-11.png \
 	png/wi-snow-colored-2013-12.png \
 	png/wi-snow-colored-2014-01.png \
 	png/wi-snow-colored-2014-02.png \
 	png/wi-snow-colored-2014-03.png \
 	png/wi-snow-colored-2014-04.png \
+	png/wi-snow-colored-2014-10.png \
 	png/wi-snow-colored-2014-11.png \
 	png/wi-snow-colored-2014-12.png \
 	png/wi-snow-colored-2015-01.png \
 	png/wi-snow-colored-2015-02.png \
 	png/wi-snow-colored-2015-03.png \
 	png/wi-snow-colored-2015-04.png \
+	png/wi-snow-colored-2015-10.png \
 	png/wi-snow-colored-2015-11.png \
 	png/wi-snow-colored-2015-12.png \
 	png/wi-snow-colored-2016-01.png \
 	png/wi-snow-colored-2016-02.png \
 	png/wi-snow-colored-2016-03.png \
 	png/wi-snow-colored-2016-04.png \
+	png/wi-snow-colored-2016-10.png \
 	png/wi-snow-colored-2016-11.png \
 	png/wi-snow-colored-2016-12.png \
 	png/wi-snow-colored-2017-01.png \
 	png/wi-snow-colored-2017-02.png \
 	png/wi-snow-colored-2017-03.png \
 	png/wi-snow-colored-2017-04.png \
+	png/wi-snow-colored-2017-10.png \
 	png/wi-snow-colored-2017-11.png \
 	png/wi-snow-colored-2017-12.png \
 	png/wi-snow-colored-2018-01.png \
 	png/wi-snow-colored-2018-02.png \
 	png/wi-snow-colored-2018-03.png \
 	png/wi-snow-colored-2018-04.png \
+	png/wi-snow-colored-2018-10.png \
 	png/wi-snow-colored-2018-11.png \
 	png/wi-snow-colored-2018-12.png \
 	png/wi-snow-colored-2019-01.png \
 	png/wi-snow-colored-2019-02.png \
-	png/wi-snow-colored-2019-03.png
+	png/wi-snow-colored-2019-03.png \
+	png/wi-snow-colored-2019-04.png \
+	png/wi-snow-colored-2019-10.png \
+	png/wi-snow-colored-2019-11.png
 
 
-NEW_TIF := tif/wi-snow-2019-04.tif
-NEW_PNG := png/wi-snow-colored-2019-04.png
+NEW_TIF := tif/wi-snow-2019-12.tif
+NEW_PNG := png/wi-snow-colored-2019-12.png
 NEW_FILES := $(NEW_TIF) $(NEW_PNG)
 
 START_DATE := $(shell date '+%Y-%m')-01
