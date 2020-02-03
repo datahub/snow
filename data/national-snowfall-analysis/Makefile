@@ -46,6 +46,7 @@ GENERATED_FILES := \
 	tif/wi-snow-2019-10.tif \
 	tif/wi-snow-2019-11.tif \
 	tif/wi-snow-2019-12.tif \
+	tif/wi-snow-2020-01.tif \
 	png/wi-snow-colored-2013-10.png \
 	png/wi-snow-colored-2013-11.png \
 	png/wi-snow-colored-2013-12.png \
@@ -90,11 +91,12 @@ GENERATED_FILES := \
 	png/wi-snow-colored-2019-04.png \
 	png/wi-snow-colored-2019-10.png \
 	png/wi-snow-colored-2019-11.png \
-	png/wi-snow-colored-2019-12.png
+	png/wi-snow-colored-2019-12.png \
+	png/wi-snow-colored-2020-01.png
 
 
-NEW_TIF := tif/wi-snow-2020-01.tif
-NEW_PNG := png/wi-snow-colored-2020-01.png
+NEW_TIF := tif/wi-snow-2020-02.tif
+NEW_PNG := png/wi-snow-colored-2020-02.png
 NEW_FILES := $(NEW_TIF) $(NEW_PNG)
 
 START_DATE := $(shell date '+%Y-%m')-01
