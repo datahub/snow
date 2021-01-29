@@ -66,6 +66,10 @@ const viewsData = [
         seasons: ['1967', '1953', '1943', '1986', '1944', '1952', '1941', '1962', '2011', '1948'],
     },
     {
+        label: '2020s',
+        seasons: d3.range(2020, 2030).map(d => d.toString()),
+    },
+    {
         label: '2010s',
         seasons: d3.range(2010, 2020).map(d => d.toString()),
     },
@@ -126,8 +130,8 @@ const parseMonthDay = (d) => {
     return date;
 };
 
-let defaultYear = '2019';
-const years = d3.range(1940, 2020).map(d => d.toString());
+let defaultYear = '2020';
+const years = d3.range(1940, 2021).map(d => d.toString());
 
 const margin = {top: 30, right: 40, bottom: 30, left: 50};
 let fullWidth = windowWidth;
@@ -380,7 +384,7 @@ function ready(data) {
             return 'middle';
         })
         .html((d) => {
-            if (d.season === 'average') return 'Avg. 1940-2018';
+            if (d.season === 'average') return 'Avg. 1940-2021';
             const y0 = +d.season;
             const y1 = (y0 + 1).toString().slice(-2);
             return `${y0}&ndash;${y1}`;

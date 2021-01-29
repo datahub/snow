@@ -1,6 +1,6 @@
 import './index.scss';
 
-const currentMonth = 2;
+const currentMonth = 1;
 
 let windowWidth = 320;
 
@@ -9,7 +9,7 @@ const imageHeight = 516;
 const aspectRatio = imageWidth / imageHeight;
 
 const formatMonth = (monthIndex) => {
-    const date = new Date(2020, monthIndex - 1, 1);
+    const date = new Date(2021, monthIndex - 1, 1);
     const month = date.getMonth();
     const abbreviatedMonths = [0, 1, 7, 8, 9, 10, 11];
     const isAbbreviated = abbreviatedMonths.indexOf(month) > -1;
@@ -44,7 +44,7 @@ const projection = d3.geoProjection(project);
 
 const path = d3.geoPath(projection);
 
-const years = d3.range(2013, 2020).reverse();
+const years = d3.range(2013, 2021).reverse();
 const months = [10, 11, 12, 1, 2, 3, 4];
 
 const xScale = d3.scaleBand()
@@ -105,7 +105,7 @@ const data = years
                 return {year, month};
             })
             .filter((d) => {
-                if (year === 2019) return (d.month > 9 || d.month <= currentMonth);
+                if (year === 2020) return (d.month > 9 || d.month <= currentMonth);
                 return true;
             });
         return {year, values};
@@ -159,7 +159,7 @@ function ready(wisconsin) {
     const monthUpdate = monthEnter.merge(month)
         .attr('transform', d => `translate(${xScale(d.month)}, 0)`);
         
-    monthEnter.filter(d => d.year === 2020 && d.month === currentMonth)
+    monthEnter.filter(d => d.year === 2021 && d.month === currentMonth)
         .append('rect')
         .attr('class', 'incomplete-month-background');
     

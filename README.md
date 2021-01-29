@@ -1,14 +1,5 @@
 <h1 style="font-size: 100px; font-weight: bolder">SNOW</h1>
 
-Everything Milwaukeeans need to know about snow.
-
-Questions we could answer:
-- Is a snow emergency in effect?
-- Is it going to snow tonight?
-- How does the snow accumulation from this winter compare to past winters?
-- How much snow has fallen across the state?
-- How deep is the snow across the state?
-
 ## Sources:
 
 **[City of Milwaukee Snow and Ice Control Operation Status](http://city.milwaukee.gov/mpw/divisions/operations/snowoperationstatus#.WjvjxlQ-cQ8):**
